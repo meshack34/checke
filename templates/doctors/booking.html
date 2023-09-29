@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <!-- Page Content -->
+<div class="content">
+	<div class="container">
+	
+		<div class="row">
+			<div class="col-12">
+            
+              
+            
+				<div class="card">
+					<div class="card-body">
+						<div class="booking-doc-info">
+							<a href="doctor-profile.html" class="booking-doc-img">
+								<img src="{{ doctor.profile_image.url }}" alt="User Image">
+							</a>
+							<div class="booking-info">
+								<h3><a href="doctor-profile.html">Dr. {{doctor.user.first_name}} {{doctor.user.last_name}}</a></h3>
+								<h4><a href="doctor-profile.html">username:  {{doctor.user.username}} </a></h4>
+								<h4><a href="doctor-profile.html">phone_number: {{doctor.user.phone_number}} </a></h4>
+								<h4><a href="doctor-profile.html">email: {{doctor.user.email}} </a></h4>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+                
+				
+				<!-- Schedule Widget -->
+				<div class="card booking-schedule schedule-widget">
+				
+					<!-- Schedule Header -->
+					<div class="schedule-header">
+						<div class="row">
+							<div class="col-md-12">
+							
+								<!-- Day Slot -->
+								<div class="day-slot">
+									<ul>
+										{% for appoint_day in appoint_day %}
+
+											<li style="margin-right: 40px;">
+												<span class="slot-date">{{appoint_day}}</span>
+											</li>
+										{% endfor %}
+								
+									</ul>
+								</div>
+								<!-- /Day Slot -->
+								
+							</div>
+						</div>
+					</div>
+					<!-- /Schedule Header -->
+					
+					<!-- Schedule Content -->
+					<div class="schedule-cont">
+						<div class="row">
+							<div class="col-md-12">
+							
+								<!-- Time Slot -->
+								<div class="time-slot ">
+									<ul class="clearfix ">
+
+										{% for appoint_day in appoint_day %}
+												
+												  
+										<form action="{% url 'patient_appointment' doctor.id %}" method="POST">
+												{% csrf_token %}
+										<li style="margin-right: 50px;">
+											
+											
+												<span >
+													
+													<select name="from_to" id="" style="width: 180px; height:30px;">
+														<option value="" selected disabled>Time</option>
+														
+														{% for appoint_time_doctor in appoint_time_doctor %}
+															{% if appoint_time_doctor.day == appoint_day %}
+																
+																<option value="{{appoint_time_doctor.from_to}},{{appoint_day}}">{{appoint_time_doctor.from_to}}</option>
+															{% endif %}
+														{% endfor %}
+													</select>
+											
+												</span> 
+											
+											
+										</li>
+										{% endfor %}
+									
+									</ul>
+								</div>
+								<!-- /Time Slot -->
+								
+							</div>
+						</div>
+					</div>
+					<!-- /Schedule Content -->
+					
+				</div>
+				<!-- /Schedule Widget -->
+				
+				<!-- Submit Section -->
+			<div class="submit-section proceed-btn text-right">
+				
+				<button type="submit" class="btn btn-primary submit-btn">Proceed</button>
+				
+			</div>
+			</form>
+				<!-- /Submit Section -->
+				
+			</div>
+
+
+
+		</div>
+	</div>
+
+</div>		
+<!-- /Page Content -->
+{% endblock content %}

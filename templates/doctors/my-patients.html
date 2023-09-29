@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  
+
+<!-- Page Content -->
+<div class="content">
+<div class="container-fluid">
+
+<div class="row">
+    {% include 'users/doctorsidenav.html' %}
+        
+        
+        <div class="col-md-7 col-lg-8 col-xl-9">          
+                 
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="mb-4">My Patients</h4>
+                    <div class="appointment-tab">
+                    
+                      
+                        <!-- /Appointment Tab -->
+                        
+                        <div class="tab-content">
+                        
+                <!-- Upcoming Appointment Tab -->
+                <div class="tab-pane show active" id="upcoming-appointments">
+                    <div class="card card-table mb-0">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient ID</th>
+                                            <th>Patient Name</th>
+                                            <th>Profile Pic </th>
+                                            <th>Date Joined</th>
+                                            <th>Medical History</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for patient_appointment in patient_appointment %}
+                                          
+                                        <tr>
+                                            <td>
+                                                <h2 class="table-avatar"><a href="{% url 'current_patient' patient_appointment.patient.id %}">PT-000-{{patient_appointment.patient.id}}</a>
+                                                </h2>
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'current_patient' patient_appointment.patient.id %}">{{ patient_appointment.patient.user.first_name }}</a>
+                                              
+                                        </td>
+                                            <td>
+                                              <a href="{% url 'current_patient' patient_appointment.patient.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{patient_appointment.patient.profile_image.url}}" alt="User Image"></a>
+                                                
+                                            </td>
+                                            <td>{{patient_appointment.patient.date_joined}} <span class="d-block text-info"></span></td> 
+                                            
+                                            <td><a href="{% url 'medical_history' %}" class="btn btn-sm bg-info-light">
+                                                <i class="fas fa-print"></i> Print
+                                            </td>
+                                            
+                                            <td class="text-left">
+                                                
+                                
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+  
+                                    </tbody>
+                                </table>		
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>		
+<!-- /Page Content -->
+
+{% endblock content %}

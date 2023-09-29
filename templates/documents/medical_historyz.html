@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            {% include 'users/patientsidenav.html' %}
+            <!-- / Profile Sidebar -->
+
+            <div class="col-md-7 col-lg-8 col-xl-9">
+                <div class="card">
+                    <div class="card-body">
+
+                        <!-- Medical History Form -->
+                        <form action="{% url 'history' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="row form-row">
+
+                                <div class="col-12">
+                                    <h4 class="form-section">Medical History</h4>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label>Reason for Visit</label>
+                                        {{ form.reason }}
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label>Weight (in kg)</label>
+                                        {{ form.weight }}
+                                    </div>
+                                </div>
+
+                                <!-- Age field is excluded -->
+                                <!--
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label>Age</label>
+                                        {{ form.age_years }}
+                                    </div>
+                                </div>
+                                -->
+
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Previous Operations</label>
+                                        {{ form.previous_operation }}
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Current Medications</label>
+                                        {{ form.current_medication }}
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Other Illnesses</label>
+                                        {{ form.other_illness }}
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Other Information</label>
+                                        {{ form.other_information }}
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="submit-section">
+                                <button type="submit" class="btn btn-primary submit-btn">Save</button>
+                            </div>
+                        </form>
+                        <!-- /Medical History Form -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- /Page Content -->
+{% endblock content %}

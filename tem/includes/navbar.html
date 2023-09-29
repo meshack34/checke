@@ -1,0 +1,89 @@
+{% load static %}
+
+<!-- Header -->
+<header class="header">
+    <nav class="navbar navbar-expand-lg header-nav">
+        <div class="navbar-header">
+            <a id="mobile_btn" href="javascript:void(0);">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+            <a href="{% url 'home' %}" class="navbar-brand logo">
+                <!-- <img src="{% static 'img/logoN.png' %}" class="img-fluid" alt="Logo"> -->
+                <h3 style="color: #0A808A; font-weight:bold;">Patient Portal</h3>
+            </a>
+        </div>
+        <div class="main-menu-wrapper">
+            <div class="menu-header">
+                <a href="{% url 'home' %}" class="menu-logo">
+                    <img src="{% static 'img/logo.png' %}" class="img-fluid" alt="Logo">
+                </a>
+                <a id="menu_close" class="menu-close" href="javascript:void(0);">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+            <ul class="main-nav">
+                <li class="active">
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="has-submenu">
+                    <a href="{% url 'doctors' %}">Doctors</i></a>
+                </li>	
+              
+                <li class="has-submenu">
+                    <a href="#">Services </a>
+                </li>
+                {% comment %} <li class="has-submenu">
+                    <a href="{% url 'pharmacy' %}">Pharmacy</a>
+                </li> {% endcomment %}
+
+                <li class="has-submenu">
+                    <a href="#">About Us </a>
+                </li>
+                <li class="has-submenu">
+                    <a href="#">Contact</a>
+                </li>
+                
+
+            </ul>		 
+        </div>		
+          
+        <ul class="nav header-navbar-rht">
+            <li class="nav-item contact-item">
+                <div class="header-contact-img">
+                    <i class="far fa-hospital"></i>
+                    <!-- <p class="contact-info-header"><a href="">Register</a></p> -->
+                </div>
+                <div class="header-contact-detail">
+                    {% if user.is_authenticated %}
+                        <p class="contact-header">Welcome | {{ user.first_name }}</p>
+                        {% if user.user_type == 'doctor' %}
+                            <p class="contact-info-header"><a href="{% url 'doctor_dashboard' %}">Dashboard</a></p>
+                        {% else %}
+                        <p class="contact-info-header"><a href="{% url 'patient_dashboard' %}">Dashboard</a></p>
+                        {% endif %}
+                        
+                    {% else  %}
+
+                    {% endif %}
+                </div>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link header-login" href="{% url 'logout' %}">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link header-login" href="{% url 'login' %}">Login</a>
+            </li>
+                <li class="nav-item">
+                    <a class="nav-link header-login" href="{% url 'register' %}">Register </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+<!-- /Header -->

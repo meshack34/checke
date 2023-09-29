@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        .section-header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 24px;
+        }
+
+        .section-header p {
+            font-size: 16px;
+        }
+
+        /* Adjust other styles as needed */
+    </style>
+</head>
+<body>
+    <!-- Home Banner -->
+    <section class="section">
+        <div class="container-fluid">
+            <div class="banner-wrapper">
+                <div class="banner-header text-center">
+                    <h1>Welcome to Our Healthcare Platform</h1>
+                    <p>Discover top healthcare professionals and book appointments online.</p>
+                </div>
+
+                <!-- Search Box -->
+                <div class="search-box">
+                    <form action="search.html">
+                        <div class="form-group search-location">
+                            <input type="text" class="form-control" placeholder="Search Location">
+                            <span class="form-text">Based on your Location</span>
+                        </div>
+                        <div class="form-group search-info text-center">
+                            <input type="text" class="form-control" placeholder="Search Doctors, Clinics, Hospitals, Conditions, etc.">
+                            <span class="form-text">E.g., Dermatology or Diabetes Check-up, etc.</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary search-btn"><i class="fas fa-search"></i> <span>Search</span></button>
+                    </form>
+                </div>
+                <!-- /Search Box -->
+            </div>
+        </div>
+    </section>
+    <!-- /Home Banner -->
+
+    <!-- Clinic and Specialties -->
+    <section class="section section-specialities">
+        <div class="container-fluid">
+            <div class="section-header text-center">
+                <h2>Specialist Doctors</h2>
+                <p class="sub-title">Discover experts in various medical fields!</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-9">
+                    <!-- Specialties List -->
+                    <ul>
+                        <li>Dermatology</li>
+                        <li>Cardiology</li>
+                        <li>Neurology</li>
+                        <li>Gastroenterology</li>
+                        <li>Ophthalmology</li>
+                    </ul>
+                    <!-- /Specialties List -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Clinic and Specialties -->
+
+    <!-- Popular Section -->
+    <section class="section section-doctor">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="section-header text-center">
+                    <h2>Book Our Doctors</h2>
+                    <p class="sub-title">Book confirmed doctor appointments online and avoid endless back-and-forth communication with our SMS and email notifications.</p>
+                </div>
+                <div class="col-lg-11">
+                    <!-- Doctor Slider -->
+                    <div class="doctor-slider slider">
+                        <!-- Doctor Widget -->
+                        {% for doctor in doctors %}
+                        <div class="profile-widget">
+                            <div class="pro-content">
+                                <h3 class="title">
+                                    <a href="{% url 'profile' doctor.id %}">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</a> 
+                                    <i class="fas fa-check-circle verified"></i>
+                                </h3>
+                                <p class="speciality">{{ doctor.specialization.specialized_category }}</p>
+                                <div class="rating">
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <span class="d-inline-block average-rating">(17)</span>
+                                </div>
+                                <ul class="available-info">
+                                    <li>
+                                        <i class="fas fa-map-marker-alt"></i> {{ doctor.city }}
+                                    </li>
+                                    <li>
+                                        <i class="far fa-clock"></i> Joined on {{ doctor.date_joined|date:"F d, Y" }}
+                                    </li>
+                                </ul>
+                                <div class="row row-sm">
+                                    <div class="col-6">
+                                        <a href="{% url 'profile' doctor.id %}" class="btn view-btn">View Profile</a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="#" class="btn book-btn">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <!-- /Doctor Widget -->
+                    </div>
+                    <!-- /Doctor Slider -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Popular Section -->
+
+    <!-- About Us Section -->
+    <section class="section section-doctor">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="section-header text-center">
+                    <h2>About Us</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla commodo dui in dui pellentesque, ut venenatis justo fringilla.</p>
+                    <!-- Add more content about your medical practice here -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /About Us Section -->
+
+    <!-- Contact Us Section -->
+    <section class="section section-specialities">
+        <div class="container-fluid">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Contact Us</h2>
+                        <p>If you have any questions or need assistance, please feel free to contact us:</p>
+                        <ul>
+                            <li>Nairobi, Kenya</li>
+                            <li>PO Box 37791 GPO,</li>
+                            <li>+254 729 364 763</li>
+                            <li>Email: karthik@bharathbrands.com</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Contact Form</h2>
+                        <!-- Basic Contact Form -->
+                        <form action="#" method="post">
+                            <div class="form-group">
+                                <label for="name">Your Name</label>
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Your Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Your Email</label>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Your Email">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" class="form-control" rows="4" placeholder="Your Message"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                        <!-- /Basic Contact Form -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Contact Us Section -->
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
+{% endblock content %}
