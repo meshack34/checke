@@ -65,6 +65,10 @@
             
                 <a href="{% url 'add_prescription' current_patient.id %}" class="add-new-btn">Add Prescription</a>
             </div>
+            <div class="text-right">
+            
+                <a href="{% url 'patient-medicals' current_patient.id %}" class="add-new-btn">patient_treatment_history</a>
+            </div>
             <div class="card card-table mb-0">
                 <div class="card-body">
                     <div class="table-responsive">

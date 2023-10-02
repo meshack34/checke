@@ -736,17 +736,208 @@ def deletePrescItem(request, pres_id):
 
 
 
-def Medication(request, pk):
-    patient = Patient.objects.get(id=pk)
+# from django.shortcuts import render, get_object_or_404, redirect
+# from .models import *
+# def add_treatment(request, patient_id):
+#     current_user = request.user
+#     current_doctor = get_object_or_404(Doctor, user=current_user)
+#     patient = get_object_or_404(Patient, id=patient_id)
 
-    if request.method == 'POST':
-        form = MedicalTreatmentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'Successfully Added Medical History for {patient}')
-            return redirect('home')
-    else:
-        form = MedicalTreatmentForm(initial={'patient': patient})
+#     if request.method == 'POST':
+#         # Handle the form submission
+#         history = request.POST.get('history', '')
+#         review_of_systems = request.POST.getlist('review_of_systems')
+#         examination = request.POST.getlist('examination')
+#         diagnosis = request.POST.getlist('diagnosis')
+#         treatment = request.POST.getlist('treatment')
+#         investgation = request.POST.getlist('investigation')
+#         medication = request.POST.getlist('medication')
+#         payment_type_id = request.POST.get('payment_type', '')
+#         follow_up_date = request.POST.get('follow_up_date', '')
 
-    context = {'form': form, 'patient': patient}
-    return render(request, 'documents/medical_history_form.html', context)
+#         # Create a new Treatment_History instance
+#         treatment_history = Medical_History.objects.create(
+#             patient=patient,
+#             history=history,
+#             payment_type_id=payment_type_id,
+#             follow_up_date=follow_up_date,
+#             doctor=current_doctor
+#         )
+#         treatment_history.review_of_systems.set(review_of_systems)
+#         treatment_history.examination.set(examination)
+#         treatment_history.diagnosis.set(diagnosis)
+#         treatment_history.treatment.set(treatment)
+#         treatment_history.investgation.set(investgation)
+#         treatment_history.medication.set(medication)
+
+#         # Calculate the total price
+#         total_price = treatment_history.calculate_total_price()
+
+#         # Save the treatment history
+#         treatment_history.save()
+
+#         # Redirect to a confirmation page or patient profile page
+#         return redirect('patient_profile', patient_id=patient.id)
+
+#     # Retrieve treatment-related data for rendering the form
+#     treatments = Treatment.objects.all()
+#     review_systems = ReviewofSystem.objects.all()
+#     examinations = Examination.objects.all()
+#     diagnoses = Diagnosis.objects.all()
+#     investigations = Investgation.objects.all()
+#     medications = Medication.objects.all()
+#     payment_types = PaymentType.objects.all()
+
+#     context = {
+#         'current_patient': patient,
+#         'current_doctor': current_doctor,
+#         'treatments': treatments,
+#         'review_systems': review_systems,
+#         'examinations': examinations,
+#         'diagnoses': diagnoses,
+#         'investigations': investigations,
+#         'medications': medications,
+#         'payment_types': payment_types,
+#     }
+
+#     return render(request, 'documents/add_treatmentt.html', context)
+
+
+# def Medication(request, pk):
+#     patient = Patient.objects.get(id=pk)
+
+#     if request.method == 'POST':
+#         form = MedicalTreatmentForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, f'Successfully Added Medical History for {patient}')
+#             return redirect('home')
+#     else:
+#         form = MedicalTreatmentForm(initial={'patient': patient})
+
+#     context = {'form': form, 'patient': patient}
+#     return render(request, 'documents/medical_history_form.html', context)
+
+
+
+# from django.shortcuts import render, get_object_or_404, redirect
+# from .models import Patient, MedicalHistoryy, DoctorSpecialization, Medication, Doctor
+# from .forms import MedicalTreatmentForm  # Import your form if you have one
+# from django.http import HttpResponseBadRequest
+
+# def Medication(request, patient_id):
+#     try:
+#         patient = get_object_or_404(Patient, id=patient_id)
+#         current_user = request.user
+#         current_doctor = get_object_or_404(Doctor, user=current_user)
+
+#         # Check if the current doctor has the medical history of the patient
+#         doctor_for_patient = MedicalHistoryy.objects.get(patient=patient, doctor=current_doctor)
+#         accepted_patient = MedicalHistoryy.objects.get(id=patient_id)
+
+#         speciality = DoctorSpecialization.objects.get(doctor=current_doctor)
+
+#         if request.method == 'POST':
+#             form = MedicalTreatmentForm(request.POST)
+#             if form.is_valid():
+#                 # Save the form with the current patient and doctor
+#                 medical_history = form.save(commit=False)
+#                 medical_history.patient = patient
+#                 medical_history.doctor = current_doctor
+#                 medical_history.save()
+
+#                 messages.success(request, f'Successfully Added Medical History for {patient}')
+#                 return redirect('home')
+#         else:
+#             form = MedicalTreatmentForm(initial={'patient': patient})
+
+#         context = {
+#             'form': form,
+#             'current_patient': patient,
+#             'doctor_for_patient': doctor_for_patient,
+#             'current_doctor': current_doctor,
+#             'speciality': speciality,
+#             'accepted_patient': accepted_patient,
+#         }
+
+#         return render(request, 'documents/medical_history_form.html', context)
+
+#     except Patient.DoesNotExist:
+#         # Handle the case where the patient does not exist
+#         return HttpResponseBadRequest("Patient not found")
+#     except Doctor.DoesNotExist:
+#         # Handle the case where the doctor does not exist
+#         return HttpResponseBadRequest("Doctor not found")
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Patient, MedicalHistoryy, DoctorSpecialization, Medication, Doctor
+from .forms import MedicalTreatmentForm
+from django.http import HttpResponseBadRequest
+from django.contrib import messages
+
+def Medication(request, patient_id):
+    try:
+        patient = get_object_or_404(Patient, id=patient_id)
+        current_user = request.user
+        current_doctor = get_object_or_404(Doctor, user=current_user)
+
+        # Check if the current doctor has the medical history of the patient
+        doctor_for_patient = MedicalHistoryy.objects.get(patient=patient, doctor=current_doctor)
+        accepted_patient = MedicalHistoryy.objects.get(id=patient_id)
+
+        speciality = DoctorSpecialization.objects.get(doctor=current_doctor)
+
+        if request.method == 'POST':
+            form = MedicalTreatmentForm(request.POST)
+            if form.is_valid():
+                # Save the form with the current patient and doctor
+                medical_history = form.save(commit=False)
+                medical_history.patient = patient
+                medical_history.doctor = current_doctor
+                medical_history.save()
+                
+                # Handle the many-to-many relationships with selected checkboxes
+                form.save_m2m()
+
+                messages.success(request, f'Successfully Added Medical History for {patient}')
+                return redirect('home')
+        else:
+            form = MedicalTreatmentForm(initial={'patient': patient})
+
+        context = {
+            'form': form,
+            'current_patient': patient,
+            'doctor_for_patient': doctor_for_patient,
+            'current_doctor': current_doctor,
+            'speciality': speciality,
+            'accepted_patient': accepted_patient,
+        }
+
+        return render(request, 'documents/medical_history_form.html', context)
+
+    except Patient.DoesNotExist:
+        # Handle the case where the patient does not exist
+        return HttpResponseBadRequest("Patient not found")
+    except Doctor.DoesNotExist:
+        # Handle the case where the doctor does not exist
+        return HttpResponseBadRequest("Doctor not found")
+
+from django.shortcuts import render, get_object_or_404
+from .models import Patient, MedicalHistoryy
+
+from django.shortcuts import render, get_object_or_404
+from .models import Patient, Medical_History  # Update the model import
+
+def view_medical_history(request, patient_id):
+    # Get the patient object or return a 404 page if not found
+    patient = get_object_or_404(Patient, id=patient_id)
+
+    # Retrieve the medical history records for the specific patient
+    medical_history = Medical_History.objects.filter(patient=patient)
+
+    context = {
+        'patient': patient,
+        'medical_history': medical_history,
+    }
+
+    return render(request, 'documents/view_medical_history.html', context)

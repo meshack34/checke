@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Treatment</h1>
+<form method="post">
+  {% csrf_token %}
+  <label for="history">History:</label>
+  <textarea name="history" id="history" rows="4" cols="50"></textarea><br><br>
+
+  <label>Review of Systems:</label>
+  {% for review_system in review_systems %}
+  <input type="checkbox" name="review_of_systems" value="{{ review_system.id }}">{{ review_system.name }}
+  {% endfor %}<br><br>
+
+  <label>Examinations:</label>
+  {% for examination_item in examinations %}
+  <input type="checkbox" name="examination" value="{{ examination_item.id }}">{{ examination_item.name }}
+  {% endfor %}<br><br>
+
+  <!-- Add similar code for other treatment-related fields (diagnosis, treatment, investigation, medication) -->
+
+  <label for="payment_type">Payment Type:</label>
+  <select name="payment_type" id="payment_type">
+    {% for payment_type in payment_types %}
+    <option value="{{ payment_type.id }}">{{ payment_type.name }}</option>
+    {% endfor %}
+  </select><br><br>
+
+  <label for="follow_up_date">Follow-up Date:</label>
+  <input type="date" name="follow_up_date" id="follow_up_date"><br><br>
+
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}

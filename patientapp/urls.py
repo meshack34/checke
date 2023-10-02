@@ -24,9 +24,17 @@ urlpatterns = [
     path('submit/Prescription/<int:patient_id>/', views.submitPrescription, name="submitPrescription"),
     path('delete/Prescription/<int:pres_id>/', views.deletePrescItem, name="deletePrescItem"),
     
+  
+    # ... your other URL patterns ...
+    # path('patient_treatment_history/<int:patient_id>/', views.patient_treatment_history, name='patient_treatment_history'),
+
+
     
+    path('treatment/<int:patient_id>/', views.Medication, name='patient-medicals'),
+    # path('add_treatment/<int:patient_id>/', views.add_treatment, name='add_treatment'),
+     path('view_medical_history/<int:patient_id>/', views.view_medical_history, name='view_medical_history'),
+
     
-    path('treatment/<int:pk>/', views.Medication, name='patient-medicals'),
     path('submitPrescription/<int:patient_id>/', views.submitPrescription, name="submitPrescription"),
     path('deletePrescItem/<int:pres_id>/', views.deletePrescItem, name="deletePrescItem"),
     path('doctor-profile/',views.doctor_profile, name='doctor_profile'),
