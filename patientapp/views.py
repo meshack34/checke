@@ -613,15 +613,11 @@ def deleteAppointment(request, appoint_id):
     return redirect('doctor_dashboard')
 
 
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import MedicalHistoryy, Patient
 from .forms import MedicalHistoryForm
-
- 
-
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .forms import MedicalHistoryForm  # Import your form
 
 def history(request):
     current_user = request.user
@@ -941,3 +937,94 @@ def view_medical_history(request, patient_id):
     }
 
     return render(request, 'documents/view_medical_history.html', context)
+
+
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseBadRequest
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from django.http import FileResponse
+from .models import Patient, Medical_History  # Update the import for the model
+
+def generate_medical_treatment_pdf(request, patient_id):
+    try:
+        current_doctor = request.user
+        current_doctor = get_object_or_404(Doctor, user=current_doctor)
+        
+        # Retrieve the patient object
+        patient = get_object_or_404(Patient, id=patient_id)
+
+        # Retrieve medical history records for the patient
+        medical_history_records = Medical_History.objects.filter(patient=patient)
+
+        # Create a PDF buffer
+        buffer = BytesIO()
+
+        # Create a PDF canvas
+        c = canvas.Canvas(buffer)
+
+        # Set PDF title and metadata (optional)
+        c.setTitle("Medical Treatment Report")
+        c.setAuthor("Your Name")
+        c.setSubject("Medical Treatment Report for " + patient.user.first_name)
+
+        # Begin adding text to the PDF
+        text = c.beginText()
+        text.setFont("Helvetica", 12)
+        text.setTextOrigin(50, 750)  # Adjust the coordinates as needed
+
+        # Add patient information to the PDF
+        text.textLine("Patient: " + patient.user.first_name)
+        text.textLine("doctor: " + current_doctor.user.first_name)
+        text.textLine("Date: " + str(datetime.date.today()))  # Include date or relevant information
+
+        # Add medical history records to the PDF
+        text.textLine("\nMedical Treatment Records:")
+        for record in medical_history_records:
+            text.textLine("- History: " + record.history)
+            text.textLine("- Follow-up Date: " + str(record.follow_up_date))
+            text.textLine("- Payment Type: " + record.payment_type.name)
+            # text.textLine("- Doctor: " + str(record.doctor.user.first_name()))
+            text.textLine("- Total Price: $" + str(record.calculate_total_price()))
+
+            text.textLine("\nReview of Systems:")
+            for review in record.review_of_systems.all():
+                text.textLine("- " + review.name)
+
+            text.textLine("\nExaminations:")
+            for examination in record.examination.all():
+                text.textLine("- " + examination.name)
+
+            text.textLine("\nDiagnoses:")
+            for diagnosis in record.diagnosis.all():
+                text.textLine("- " + diagnosis.name)
+
+            text.textLine("\nTreatments:")
+            for treatment in record.treatment.all():
+                text.textLine("- " + treatment.name)
+
+            text.textLine("\nInvestigations:")
+            for investigation in record.investgation.all():
+                text.textLine("- " + investigation.name)
+
+            text.textLine("\nMedications:")
+            for medication in record.medication.all():
+                text.textLine("- " + medication.name)
+
+        # End text input and draw it on the PDF
+        c.drawText(text)
+
+        # Save the PDF
+        c.showPage()
+        c.save()
+
+        # Reset the buffer position to the beginning
+        buffer.seek(0)
+
+        # Create a FileResponse for the PDF download
+        response = FileResponse(buffer, as_attachment=True, filename="medical_treatment_report.pdf")
+
+        return response
+
+    except Patient.DoesNotExist:
+        return HttpResponseBadRequest("Patient not found")

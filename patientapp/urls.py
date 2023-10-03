@@ -20,10 +20,12 @@ urlpatterns = [
     path('status/<int:patient_id>',views.status, name='status'),
     path('current/patient/<int:patient_id>/', views.current_patient, name="current_patient"),
     path('Prescription/<int:patient_id>/', views.getPrescriptionForDoc, name="getPrescriptionForDoc"),
+    
     path('add/prescription/<int:patient_id>/', views.add_prescription, name='add_prescription'),
     path('submit/Prescription/<int:patient_id>/', views.submitPrescription, name="submitPrescription"),
     path('delete/Prescription/<int:pres_id>/', views.deletePrescItem, name="deletePrescItem"),
     
+    path('treatmentpdf/<int:patient_id>/', views.generate_medical_treatment_pdf, name="generatedpdf"),
   
     # ... your other URL patterns ...
     # path('patient_treatment_history/<int:patient_id>/', views.patient_treatment_history, name='patient_treatment_history'),
@@ -43,7 +45,6 @@ urlpatterns = [
     path('medical_history/', views.medical_history, name='medical_history'),
     path('schedule_timing/<int:doctor_id>/', views.schedule_timing, name='schedule_timing'),
     path('mypatients', views.mypatients, name='mypatients'),
-    
     path('viewReview/', views.viewReview, name="viewReview"),
     path('viewReviewOnProfile/', views.viewReviewOnProfile, name="viewReviewOnProfile"),
     path('deleteAppointment/', views.deleteAppointment, name="deleteAppointment"),
