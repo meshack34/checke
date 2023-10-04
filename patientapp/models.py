@@ -1,8 +1,6 @@
 from datetime import datetime
 from django.db import models
-# Create your models here.
-from django.db import models
-# from doctors.models import Doctor
+
 from datetime import datetime
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -16,6 +14,18 @@ from django.db import models
 from django.contrib.auth.models import  AbstractBaseUser , BaseUserManager, PermissionsMixin
 
 # Create your models here.
+# models.py
+
+from django.db import models
+
+class Card(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    description2 = models.TextField(null=True)
+    caption = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.title
 
 class AccountManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, password=None):
@@ -163,6 +173,7 @@ class PrescriptionStatus(models.Model):
     is_uploaded= models.BooleanField(default=False)
     doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, null=True)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
+    date_created = models.DateTimeField(default=datetime.now, blank=True)
 
     def __int__(self):
         return self.id

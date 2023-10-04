@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect, render
-
-# views.py
-from django.shortcuts import render, redirect
-from .models import Patient
-from .forms import PatientForm
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Patient, MedicalHistoryy, DoctorSpecialization, Medication, Doctor
+from .forms import MedicalTreatmentForm
+from django.http import HttpResponseBadRequest
+from django.contrib import messages
+from .models import MedicalHistoryy, Patient
 from datetime import date
 from .forms import (
     MedicalHistoryForm,
@@ -34,16 +35,37 @@ from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 from django.contrib.auth.decorators import login_required
 
+from django.shortcuts import render
+from .models import Card  # Replace with your actual model
+from django.shortcuts import render
+from django.utils import timezone
+from .models import Patient  # Import your Patient model
+from django.shortcuts import render
+from .models import Account  # Import your Account model
 
-# Create your views here.
 def home(request):
-    doctors = Doctor.objects.all()
-    specialization = DoctorSpecialization.objects.all()
+    card_list = Card.objects.all()  # Replace with your actual query
+
     context = {
-        'doctor':doctors,
-        'specialization':specialization,
+        'card_list': card_list
     }
+
     return render(request, 'home.html', context)
+
+
+def patient_statistics(request):
+    # Calculate total patients (users with a specific user_type)
+    total_patients = Account.objects.filter(user_type='Patient').count()
+    today = timezone.now().date()
+    patients_registered_today = Account.objects.filter(date_joined__date=today).count()
+    print(total_patients)
+    context = {
+        'total_patients': total_patients,
+        'patients_registered_today': patients_registered_today,
+        
+    }
+
+    return render(request, 'users/doctor_dashboard.html', context)  # Replace 'your_actual_template.html' with your template name
 
 
 def patientregister(request):
@@ -57,11 +79,7 @@ def patientregister(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user_type = form.cleaned_data['user_type']
-            
-            # Generate a username from the email
             username = email.split("@")[0]
-            
-            # Create a new user and set attributes
             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
             user.user_type = user_type
             user.phone_number = phone_number
@@ -154,11 +172,15 @@ def logout(request):
 
 
 def doctor_dashboard(request):
+
     current_user = request.user
     current_doctor = get_object_or_404(Doctor, user=current_user)
-    
     specialization = DoctorSpecialization.objects.filter(doctor=current_doctor)
-
+    
+    total_patients = Account.objects.filter(user_type='Patient').count()
+    today = timezone.now().date()
+    patients_registered_today = Account.objects.filter(date_joined__date=today).count()
+    print(total_patients)
     patient_appointment = MedicalHistoryy.objects.filter(doctor=current_doctor)
    
     if request.method == 'POST':
@@ -172,8 +194,10 @@ def doctor_dashboard(request):
     context = {
         'doctor': current_doctor,
         'specialization':specialization,
-        # 'appointment': appointment,
         'patient_appointment':patient_appointment,
+        'total_patients': total_patients,
+        'patients_registered_today': patients_registered_today,
+        
     }
 
     return render(request,'users/doctor_dashboard.html', context)
@@ -183,14 +207,11 @@ def patient_dashboard(request):
     current_patient = get_object_or_404(Patient, user=current_user)
 
     current_appointment = MedicalHistoryy.objects.filter(patient=current_patient) 
-
+    print(current_appointment)
     prescription = Prescription.objects.filter(patient=current_patient)
 
     prescription_status = PrescriptionStatus.objects.filter(patient=current_patient,is_uploaded=True)
-
    
-
-
     context = {
         'patient': current_patient,
         'current_appointment':current_appointment,
@@ -232,10 +253,21 @@ def current_patient(request, patient_id):
 
     return render(request, 'users/current-patient.html', context)
 
+import io
+from django.shortcuts import get_object_or_404
+from django.http import FileResponse
+from django.contrib.auth.decorators import login_required
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+
+from .models import Doctor, Patient, Prescription  # Import your models
+
+@login_required  # Use login_required decorator to ensure the user is authenticated
 def getPrescriptionForDoc(request, patient_id):
     current_user = request.user
-    current_doctor = get_object_or_404(Doctor,user=current_user)
-    patient = Patient.objects.get(id=patient_id)
+    current_doctor = get_object_or_404(Doctor, user=current_user)
+    patient = get_object_or_404(Patient, id=patient_id)  # Use get_object_or_404 for better error handling
 
     buf = io.BytesIO()
     c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
@@ -243,34 +275,31 @@ def getPrescriptionForDoc(request, patient_id):
     textob.setTextOrigin(inch, inch)
     textob.setFont("Helvetica", 14)
 
-    pres = Prescription.objects.filter(patient=patient, doctor=current_doctor)
+    # Use filter() to get a queryset instead of get()
+    prescriptions = Prescription.objects.filter(patient=patient, doctor=current_doctor)
 
     lines = []
-    lines.append(" ")
-    lines.append("         Prescription               ")
-    lines.append("Patient Name: "+patient.user.first_name+" "+patient.user.last_name)
-    lines.append("Doctor Name: Dr. "+current_doctor.user.first_name+" "+current_doctor.user.last_name)
-    for pres in pres:
-        lines.append("                              ")
-        lines.append("Drug Name: "+pres.name)
-        lines.append("Quantity: "+pres.quantity)
-        lines.append("Days: "+pres.days)
-        lines.append("Time Slot 1: "+pres.morning)
-        lines.append("Time Slot 2: "+pres.afternoon)
-        lines.append("Time Slot 3: "+pres.evening)
-        lines.append("Time Slot 4: "+pres.night)
-   
-        
+    lines.append("Prescription File")
+    lines.append(f"Patient: {patient.user.first_name} {patient.user.last_name}")
+    lines.append(f"Doctor. :  {current_doctor.user.first_name} {current_doctor.user.last_name}")
+
+    for prescription in prescriptions:
+        lines.append(f"Drug Name: {prescription.name}")
+        lines.append(f"Quantity: {prescription.quantity}")
+        lines.append(f"Days: {prescription.days}")
 
     for line in lines:
         textob.textLine(line)
-    
+
     c.drawText(textob)
     c.showPage()
     c.save()
     buf.seek(0)
 
-    return FileResponse(buf, as_attachment=True, filename='prescription.pdf')
+    # Set the response content type for PDF
+    response = FileResponse(buf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=prescription.pdf'
+    return response
 
 
 
@@ -338,7 +367,6 @@ def getPrescription(request):
     pres = Prescription.objects.filter(patient=current_patient)
 
     lines = []
-    lines.append(" ")
     lines.append(" Prescription")
     lines.append("Patient Name: "+current_patient.user.first_name+" "+current_patient.user.last_name)
     for pres in pres:
@@ -347,7 +375,6 @@ def getPrescription(request):
         lines.append("Quantity: "+pres.quantity)
         lines.append("Days: "+pres.days)
         
-
     for line in lines:
         textob.textLine(line)
     
@@ -356,7 +383,7 @@ def getPrescription(request):
     c.save()
     buf.seek(0)
 
-    return FileResponse(buf, as_attachment=True, filename='prescription.pdf')
+    return FileResponse(buf, as_attachment=True, filename='prescriptionfile.pdf')
 
 
 def show_prescription(request):
@@ -410,7 +437,6 @@ def booking(request, doctor_id):
     except:
         booked_doctor = MedicalHistoryy(doctor=doctor, patient=current_patient)
         booked_doctor.save()
-
     appoint_time_doctor = AppointmentTime.objects.filter(doctor=doctor)
 
     appoint_day = appoint_time_doctor.values_list('day',flat=True).distinct()
@@ -499,6 +525,7 @@ def profile(request, doctor_id):
     doctor = Doctor.objects.get(id=doctor_id)
     specialization = DoctorSpecialization.objects.get(doctor=doctor)
     appointment = AppointmentTime.objects.filter(doctor=doctor)
+    print(appointment)
     context = {
         'doc_profile':doctor,
         'specialization':specialization,
@@ -615,9 +642,6 @@ def deleteAppointment(request, appoint_id):
 
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import MedicalHistoryy, Patient
-from .forms import MedicalHistoryForm
 
 def history(request):
     current_user = request.user
@@ -732,144 +756,6 @@ def deletePrescItem(request, pres_id):
 
 
 
-# from django.shortcuts import render, get_object_or_404, redirect
-# from .models import *
-# def add_treatment(request, patient_id):
-#     current_user = request.user
-#     current_doctor = get_object_or_404(Doctor, user=current_user)
-#     patient = get_object_or_404(Patient, id=patient_id)
-
-#     if request.method == 'POST':
-#         # Handle the form submission
-#         history = request.POST.get('history', '')
-#         review_of_systems = request.POST.getlist('review_of_systems')
-#         examination = request.POST.getlist('examination')
-#         diagnosis = request.POST.getlist('diagnosis')
-#         treatment = request.POST.getlist('treatment')
-#         investgation = request.POST.getlist('investigation')
-#         medication = request.POST.getlist('medication')
-#         payment_type_id = request.POST.get('payment_type', '')
-#         follow_up_date = request.POST.get('follow_up_date', '')
-
-#         # Create a new Treatment_History instance
-#         treatment_history = Medical_History.objects.create(
-#             patient=patient,
-#             history=history,
-#             payment_type_id=payment_type_id,
-#             follow_up_date=follow_up_date,
-#             doctor=current_doctor
-#         )
-#         treatment_history.review_of_systems.set(review_of_systems)
-#         treatment_history.examination.set(examination)
-#         treatment_history.diagnosis.set(diagnosis)
-#         treatment_history.treatment.set(treatment)
-#         treatment_history.investgation.set(investgation)
-#         treatment_history.medication.set(medication)
-
-#         # Calculate the total price
-#         total_price = treatment_history.calculate_total_price()
-
-#         # Save the treatment history
-#         treatment_history.save()
-
-#         # Redirect to a confirmation page or patient profile page
-#         return redirect('patient_profile', patient_id=patient.id)
-
-#     # Retrieve treatment-related data for rendering the form
-#     treatments = Treatment.objects.all()
-#     review_systems = ReviewofSystem.objects.all()
-#     examinations = Examination.objects.all()
-#     diagnoses = Diagnosis.objects.all()
-#     investigations = Investgation.objects.all()
-#     medications = Medication.objects.all()
-#     payment_types = PaymentType.objects.all()
-
-#     context = {
-#         'current_patient': patient,
-#         'current_doctor': current_doctor,
-#         'treatments': treatments,
-#         'review_systems': review_systems,
-#         'examinations': examinations,
-#         'diagnoses': diagnoses,
-#         'investigations': investigations,
-#         'medications': medications,
-#         'payment_types': payment_types,
-#     }
-
-#     return render(request, 'documents/add_treatmentt.html', context)
-
-
-# def Medication(request, pk):
-#     patient = Patient.objects.get(id=pk)
-
-#     if request.method == 'POST':
-#         form = MedicalTreatmentForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, f'Successfully Added Medical History for {patient}')
-#             return redirect('home')
-#     else:
-#         form = MedicalTreatmentForm(initial={'patient': patient})
-
-#     context = {'form': form, 'patient': patient}
-#     return render(request, 'documents/medical_history_form.html', context)
-
-
-
-# from django.shortcuts import render, get_object_or_404, redirect
-# from .models import Patient, MedicalHistoryy, DoctorSpecialization, Medication, Doctor
-# from .forms import MedicalTreatmentForm  # Import your form if you have one
-# from django.http import HttpResponseBadRequest
-
-# def Medication(request, patient_id):
-#     try:
-#         patient = get_object_or_404(Patient, id=patient_id)
-#         current_user = request.user
-#         current_doctor = get_object_or_404(Doctor, user=current_user)
-
-#         # Check if the current doctor has the medical history of the patient
-#         doctor_for_patient = MedicalHistoryy.objects.get(patient=patient, doctor=current_doctor)
-#         accepted_patient = MedicalHistoryy.objects.get(id=patient_id)
-
-#         speciality = DoctorSpecialization.objects.get(doctor=current_doctor)
-
-#         if request.method == 'POST':
-#             form = MedicalTreatmentForm(request.POST)
-#             if form.is_valid():
-#                 # Save the form with the current patient and doctor
-#                 medical_history = form.save(commit=False)
-#                 medical_history.patient = patient
-#                 medical_history.doctor = current_doctor
-#                 medical_history.save()
-
-#                 messages.success(request, f'Successfully Added Medical History for {patient}')
-#                 return redirect('home')
-#         else:
-#             form = MedicalTreatmentForm(initial={'patient': patient})
-
-#         context = {
-#             'form': form,
-#             'current_patient': patient,
-#             'doctor_for_patient': doctor_for_patient,
-#             'current_doctor': current_doctor,
-#             'speciality': speciality,
-#             'accepted_patient': accepted_patient,
-#         }
-
-#         return render(request, 'documents/medical_history_form.html', context)
-
-#     except Patient.DoesNotExist:
-#         # Handle the case where the patient does not exist
-#         return HttpResponseBadRequest("Patient not found")
-#     except Doctor.DoesNotExist:
-#         # Handle the case where the doctor does not exist
-#         return HttpResponseBadRequest("Doctor not found")
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Patient, MedicalHistoryy, DoctorSpecialization, Medication, Doctor
-from .forms import MedicalTreatmentForm
-from django.http import HttpResponseBadRequest
-from django.contrib import messages
 
 def Medication(request, patient_id):
     try:
@@ -1011,7 +897,6 @@ def generate_medical_treatment_pdf(request, patient_id):
             for medication in record.medication.all():
                 text.textLine("- " + medication.name)
 
-        # End text input and draw it on the PDF
         c.drawText(text)
 
         # Save the PDF

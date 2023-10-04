@@ -7,192 +7,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient</title>
+    <title>Welcome to Our Healthcare Platform</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+   
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
-        .section-header {
-            background-color: #3498db;
-            color: #fff;
+        /* Custom styles for the card slider */
+        .carousel-card {
+            background-color: #f5f5f5; /* Update the background color here */
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 40px; /* Adjust padding */
+            margin: 20px auto; /* Center content */
+            max-width: 600px; /* Limit content width */
+        }
+
+        .carousel-card-content {
             padding: 20px;
         }
 
-        .section-header h2 {
+        .carousel-caption {
+            padding: 10px;
+            border-radius: 0 0 10px 10px;
+            color: #333;
+        }
+
+        .content-container {
+            min-height: 400px; /* Adjust as needed */
+        }
+
+        /* Style the title */
+        .carousel-card h3 {
+            color: #333; /* Update the title color */
             font-size: 24px;
         }
 
-        .section-header p {
-            font-size: 16px;
+        /* Style the description */
+        .carousel-card p {
+            color: #666; /* Update the description color */
         }
 
-        /* Adjust other styles as needed */
+        /* Restyled section header */
+        .section-header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 40px 0; /* Adjust padding */
+            text-align: center;
+        }
+
+        .section-header h1 {
+            font-size: 32px; /* Increase font size */
+        }
+
+        .section-header p {
+            font-size: 18px; /* Increase font size */
+        }
+
+        /* Styling for the Contact Form section */
+        .section-specialities {
+            background-color: #f5f5f5; /* Set background color */
+            padding: 40px 0; /* Adjust padding */
+            text-align: center; /* Center content */
+        }
+
+        .section-specialities h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px; /* Adjust margin */
+        }
+
+        /* Style the form */
+        .section-specialities form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-specialities .form-group {
+            margin-bottom: 20px; /* Adjust margin */
+        }
+
+        .section-specialities label {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <!-- Home Banner -->
-    <section class="section">
-        <div class="container-fluid">
-            <div class="banner-wrapper">
-                <div class="banner-header text-center">
-                    <h1>Welcome to Our Healthcare Platform</h1>
-                    <p>Discover top healthcare professionals and book appointments online.</p>
-                </div>
 
-                <!-- Search Box -->
-                <div class="search-box">
-                    <form action="search.html">
-                        <div class="form-group search-location">
-                            <input type="text" class="form-control" placeholder="Search Location">
-                            <span class="form-text">Based on your Location</span>
+<!-- Home Banner -->
+<section class="section-header" style="background-color: #BDE5E9;">
+    <h1>Welcome to Our Patient Portal Healthcare Platform</h1>
+    <p>Discover top healthcare professionals and book appointments online.</p>
+
+    <div id="card-carousel" class="carousel slide" data-ride="carousel" data-interval="1500">
+        <div class="carousel-inner">
+            {% for card in card_list %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="carousel-card">
+                        <div class="carousel-card-content text-center">
+                            <h3>{{ card.title }}</h3>
+                            <p>{{ card.description }}</p>
+                            <p>{{ card.description2 }}</p>
                         </div>
-                        <div class="form-group search-info text-center">
-                            <input type="text" class="form-control" placeholder="Search Doctors, Clinics, Hospitals, Conditions, etc.">
-                            <span class="form-text">E.g., Dermatology or Diabetes Check-up, etc.</span>
+                        <div class="carousel-caption">
+                            {{ card.caption }}
                         </div>
-                        <button type="submit" class="btn btn-primary search-btn"><i class="fas fa-search"></i> <span>Search</span></button>
-                    </form>
-                </div>
-                <!-- /Search Box -->
-            </div>
-        </div>
-    </section>
-    <!-- /Home Banner -->
-
-    <!-- Clinic and Specialties -->
-    <section class="section section-specialities">
-        <div class="container-fluid">
-            <div class="section-header text-center">
-                <h2>Specialist Doctors</h2>
-                <p class="sub-title">Discover experts in various medical fields!</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-9">
-                    <!-- Specialties List -->
-                    <ul>
-                        <li>Dermatology</li>
-                        <li>Cardiology</li>
-                        <li>Neurology</li>
-                        <li>Gastroenterology</li>
-                        <li>Ophthalmology</li>
-                    </ul>
-                    <!-- /Specialties List -->
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- /Clinic and Specialties -->
-
-    <!-- Popular Section -->
-    <section class="section section-doctor">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="section-header text-center">
-                    <h2>Book Our Doctors</h2>
-                    <p class="sub-title">Book confirmed doctor appointments online and avoid endless back-and-forth communication with our SMS and email notifications.</p>
-                </div>
-                <div class="col-lg-11">
-                    <!-- Doctor Slider -->
-                    <div class="doctor-slider slider">
-                        <!-- Doctor Widget -->
-                        {% for doctor in doctors %}
-                        <div class="profile-widget">
-                            <div class="pro-content">
-                                <h3 class="title">
-                                    <a href="{% url 'profile' doctor.id %}">Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}</a> 
-                                    <i class="fas fa-check-circle verified"></i>
-                                </h3>
-                                <p class="speciality">{{ doctor.specialization.specialized_category }}</p>
-                                <div class="rating">
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <i class="fas fa-star filled"></i>
-                                    <span class="d-inline-block average-rating">(17)</span>
-                                </div>
-                                <ul class="available-info">
-                                    <li>
-                                        <i class="fas fa-map-marker-alt"></i> {{ doctor.city }}
-                                    </li>
-                                    <li>
-                                        <i class="far fa-clock"></i> Joined on {{ doctor.date_joined|date:"F d, Y" }}
-                                    </li>
-                                </ul>
-                                <div class="row row-sm">
-                                    <div class="col-6">
-                                        <a href="{% url 'profile' doctor.id %}" class="btn view-btn">View Profile</a>
-                                    </div>
-                                    <div class="col-6">
-                                        <a href="#" class="btn book-btn">Book Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                        <!-- /Doctor Widget -->
-                    </div>
-                    <!-- /Doctor Slider -->
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- /Popular Section -->
-
-    <!-- About Us Section -->
-    <section class="section section-doctor">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="section-header text-center">
-                    <h2>About Us</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla commodo dui in dui pellentesque, ut venenatis justo fringilla.</p>
-                    <!-- Add more content about your medical practice here -->
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- /About Us Section -->
-
-    <!-- Contact Us Section -->
-    <section class="section section-specialities">
-        <div class="container-fluid">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h2>Contact Us</h2>
-                        <p>If you have any questions or need assistance, please feel free to contact us:</p>
-                        <ul>
-                            <li>Nairobi, Kenya</li>
-                            <li>PO Box 37791 GPO,</li>
-                            <li>+254 729 364 763</li>
-                            <li>Email: karthik@bharathbrands.com</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h2>Contact Form</h2>
-                        <!-- Basic Contact Form -->
-                        <form action="#" method="post">
-                            <div class="form-group">
-                                <label for="name">Your Name</label>
-                                <input type="text" id="name" name="name" class="form-control" placeholder="Your Name">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Your Email</label>
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Your Email">
-                            </div>
-                            <div class="form-group">
-                                <label for="message">Message</label>
-                                <textarea id="message" name="message" class="form-control" rows="4" placeholder="Your Message"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Send Message</button>
-                        </form>
-                        <!-- /Basic Contact Form -->
                     </div>
                 </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#card-carousel" role="button" data-slide="prev" style="margin-left: 270px;">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#card-carousel" role="button" data-slide="next" style="margin-right: 270px;">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+    
+</section>
+<!-- /Home Banner -->
+
+<!-- Contact Us Section -->
+<section class="section-specialities">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <h2>Contact Form</h2>
+                <!-- Basic Contact Form -->
+                <form action="#" method="post">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Email</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" class="form-control" rows="4" placeholder="Your Message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+                <!-- /Basic Contact Form -->
             </div>
         </div>
-    </section>
-    <!-- /Contact Us Section -->
+    </div>
+</section>
+<!-- /Contact Us Section -->
 
-    <script src="{% static 'js/main.js' %}"></script>
+<!-- Include Bootstrap JavaScript for the Carousel -->
+<script>
+    $(document).ready(function(){
+        $('#card-carousel').carousel();
+    });
+</script>
 </body>
 </html>
 {% endblock content %}

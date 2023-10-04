@@ -1,64 +1,104 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
-  
-
-<!-- Page Content -->
 <div class="content">
-<div class="container-fluid">
-
-<div class="row">
-    {% include 'users/doctorsidenav.html' %}
-        
-        
-        <div class="col-md-7 col-lg-8 col-xl-9">
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card dash-card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 col-lg-4">
-                                    <div class="dash-widget dct-border-rht">
-                                        <div class="circle-bar circle-bar1">
-                                            <div class="circle-graph1" data-percent="75">
-                                                <img src="{% static 'img/icon-01.png' %}" class="img-fluid" alt="patient">
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'users/doctorsidenav.html' %}
+            <div class="col-md-7 col-lg-8 col-xl-9">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card dash-card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-4">
+                                        <div class="dash-widget dct-border-rht">
+                                            <div class="circle-bar circle-bar1">
+                                                <div class="circle-graph1" data-percent="75">
+                                                    <img src="{% static 'img/icon-01.png' %}" class="img-fluid" alt="patient">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="dash-widget-info">
-                                            <h6>Total Patient</h6>
-                                            <h3></h3>
-                                            <p class="text-muted">Till Today</p>
+                                            <div class="dash-widget-info">
+                                                <h6>Patients Registered:</h6>
+                                                <p>{{ patients_registered_today }}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div class="col-md-12 col-lg-4">
-                                    <div class="dash-widget dct-border-rht">
-                                        <div class="circle-bar circle-bar2">
-                                            <div class="circle-graph2" data-percent="65">
-                                                <img src="{% static 'img/icon-02.png' %}" class="img-fluid" alt="Patient">
+
+                                <!-- Upcoming Appointment Tab -->
+                                <div class="tab-pane show active" id="upcoming-appointments">
+                                    <div class="card card-table mb-0">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Patient ID</th>
+                                                            <th>Patient Name</th>
+                                                            <th> Date</th>
+                                                            <th>Medical History</th>
+                                                            <th>Confirmation</th>
+                                                            <th>View</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for patient_appointment in patient_appointment %}
+                                                        <tr>
+                                                            <td>
+                                                                <h2 class="table-avatar">
+                                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}">PT-000-{{ patient_appointment.patient.id }}</a>
+                                                                </h2>
+                                                            </td>
+                                                            <td>
+                                                                <h2 class="table-avatar">
+                                                                    {% comment %} <a href="{% url 'current_patient' patient_appointment.patient.id %}" class="avatar avatar-sm mr-2">
+                                                                        <img class="avatar-img rounded-circle" src="{{ patient_appointment.patient.profile_image.url }}" alt="User Image">
+                                                                    </a> {% endcomment %}
+                                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}">{{ patient_appointment.patient.user.first_name }}</a>
+                                                                </h2>
+                                                            </td>
+                                                            <td>{{ patient_appointment.date_created }} <span class="d-block text-info"></span></td>
+                                                            <td>
+                                                                <a href="{% url 'medical_history' %}" class="btn btn-sm bg-info-light">
+                                                                    <i class="fas fa-print"></i> Print
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <div class="table-action">
+                                                                    <form action="{% url 'doctor_dashboard' %}" method="post">
+                                                                        {% csrf_token %}
+                                                                        {% if patient_appointment.is_active %}
+                                                                        <a href="#">
+                                                                            <input type="hidden" name="status" value="{{ patient_appointment.id }}">
+                                                                            <button type="submit" class="btn btn-sm bg-success-light">
+                                                                                <i class="fas fa-check"></i> Confirmed
+                                                                            </button>
+                                                                        </a>
+                                                                        {% else %}
+                                                                        <a href="#">
+                                                                            <input type="hidden" name="status" value="{{ patient_appointment.id }}">
+                                                                            <button type="submit" class="btn btn-sm bg-primary-light">
+                                                                                <i class="fas fa-check"></i> Confirm
+                                                                            </button>
+                                                                        </a>
+                                                                        {% endif %}
+                                                                    </form>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="table-action">
+                                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}" class="btn btn-sm bg-info-light">
+                                                                        <i class="far fa-eye"></i> View
+                                                                    </a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                        </div>
-                                        <div class="dash-widget-info">
-                                            <h6>Today Patient</h6>
-                                            <h3></h3>
-                                            <p class="text-muted"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-12 col-lg-4">
-                                    <div class="dash-widget">
-                                        <div class="circle-bar circle-bar3">
-                                            <div class="circle-graph3" data-percent="50">
-                                                <img src="{% static 'img/icon-03.png' %}" class="img-fluid" alt="Patient">
-                                            </div>
-                                        </div>
-                                        <div class="dash-widget-info">
-                                            <h6>Appoinments</h6>
-                                            <h3></h3>
-                                            <p class="text-muted"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -67,106 +107,7 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 class="mb-4">Patient Appoinment</h4>
-                    <div class="appointment-tab">
-                    
-                        <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#today-appointments" data-toggle="tab">Today</a>
-                            </li> 
-                        </ul>
-                        <!-- /Appointment Tab -->
-                        
-                        <div class="tab-content">
-                        
-                <!-- Upcoming Appointment Tab -->
-                <div class="tab-pane show active" id="upcoming-appointments">
-                    <div class="card card-table mb-0">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Patient ID</th>
-                                            <th>Patient Name</th>
-                                            <th>Appt Date</th>
-                                            <th>Medical History</th>
-                                            <th>Confirmation</th>
-                                            <th>View</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for patient_appointment in patient_appointment %}
-                                          
-                                        <tr>
-                                            <td>
-                                                <h2 class="table-avatar"><a href="{% url 'current_patient' patient_appointment.patient.id %}">PT-000-{{patient_appointment.patient.id}}</a>
-                                                </h2>
-                                            </td>
-                                            <td>
-                                                <h2 class="table-avatar">
-                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{patient_appointment.patient.profile_image.url}}" alt="User Image"></a>
-                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}">{{ patient_appointment.patient.user.first_name }}</a>
-                                                </h2>
-                                            </td>
-                                            
-                                           <td>{{patient_appointment.date_created}} <span class="d-block text-info"></span></td> 
-                                           <td><a href="{% url 'medical_history' %}" class="btn btn-sm bg-info-light">
-                                            <i class="fas fa-print"></i> Print</a></td>
-                                            
-                                            <td class="text-left">
-                                                
-                                <div class="table-action">
-                                    <form action="{% url 'doctor_dashboard' %}" method="post">
-                                        {% csrf_token %}
-                                    {% if patient_appointment.is_active %}
-                                        <a href="#" >
-                                            <input type="hidden" name="status" value="{{patient_appointment.id}}">
-                                            <button type="submit" class="btn btn-sm bg-success-light"><i class="fas fa-check"></i> Confirmed
-                                            </button>
-                                        </a>
-                                    {% else %}
-                                    <a href="#" >
-                                        <input type="hidden" name="status" value="{{patient_appointment.id}}">
-                                        <button type="submit" class="btn btn-sm bg-primary-light"><i class="fas fa-check"></i> confirm
-                                        </button>
-                                    </a>
-
-                                   
-                                    {% endif %}
-                                </form>
-                                </div>
-                                
-                            </td>
-                            <td> <div class="table-action">
-                                <a href="{% url 'current_patient' patient_appointment.patient.id %}" class="btn btn-sm bg-info-light">
-                                    
-                                        <i class="far fa-eye"></i> View
-                                    </a></div></td>
-                        </tr>
-                        {% endfor %}
-  
-                                    </tbody>
-                                </table>		
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
         </div>
     </div>
 </div>
-
-        </div>
-    </div>
-
-</div>
-
-</div>		
-<!-- /Page Content -->
-
 {% endblock content %}

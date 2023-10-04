@@ -1,13 +1,23 @@
-
 from .models import *
 from django.forms import DateInput
 from django.forms.fields import DateField
 from django.forms.widgets import PasswordInput
-
 from django import forms
 from django.forms import DateInput, DateField, PasswordInput
-from .models import Doctor, Patient, Account
 
+      
+            
+class MedicalTreatmentForm(forms.ModelForm):
+    treatment = forms.ModelMultipleChoiceField(queryset=Treatment.objects.all(), widget=forms.CheckboxSelectMultiple)
+    review_of_systems = forms.ModelMultipleChoiceField(queryset=ReviewofSystem.objects.all(), widget=forms.CheckboxSelectMultiple)
+    examination = forms.ModelMultipleChoiceField(queryset=Examination.objects.all(), widget=forms.CheckboxSelectMultiple)
+    diagnosis = forms.ModelMultipleChoiceField(queryset=Diagnosis.objects.all(), widget=forms.CheckboxSelectMultiple)
+    investgation = forms.ModelMultipleChoiceField(queryset=Investgation.objects.all(), widget=forms.CheckboxSelectMultiple)
+    medication = forms.ModelMultipleChoiceField(queryset=Medication.objects.all(), widget=forms.CheckboxSelectMultiple)
+    follow_up_date = DateField(widget=DateInput)
+    class Meta:
+        model = Medical_History
+        fields = ('__all__')
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=PasswordInput(attrs={
@@ -36,9 +46,6 @@ class RegistrationForm(forms.ModelForm):
     
 
 
-# forms.py
-from django import forms
-from .models import Patient
 
 class PatientForm(forms.ModelForm):
     class Meta:
@@ -89,17 +96,4 @@ class MedicalHistoryForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
-      
-            
-class MedicalTreatmentForm(forms.ModelForm):
-    treatment = forms.ModelMultipleChoiceField(queryset=Treatment.objects.all(), widget=forms.CheckboxSelectMultiple)
-    review_of_systems = forms.ModelMultipleChoiceField(queryset=ReviewofSystem.objects.all(), widget=forms.CheckboxSelectMultiple)
-    examination = forms.ModelMultipleChoiceField(queryset=Examination.objects.all(), widget=forms.CheckboxSelectMultiple)
-    diagnosis = forms.ModelMultipleChoiceField(queryset=Diagnosis.objects.all(), widget=forms.CheckboxSelectMultiple)
-    investgation = forms.ModelMultipleChoiceField(queryset=Investgation.objects.all(), widget=forms.CheckboxSelectMultiple)
-    medication = forms.ModelMultipleChoiceField(queryset=Medication.objects.all(), widget=forms.CheckboxSelectMultiple)
-    follow_up_date = DateField(widget=DateInput)
-    class Meta:
-        model = Medical_History
-        fields = ('__all__')
    
