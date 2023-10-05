@@ -13,10 +13,11 @@
                 </a>
                 <div class="profile-det-info">
                     <h3>Dr. {{doctor.user.first_name}} {{ doctor.user.last_name }}</h3>
+                   
                     {% if specialization %}
                         {% for i in specialization %}
                         <div class="patient-details">
-                            <small class="mb-0" style="display: inline;">{{ i.specialized_category }}</small>
+                            <small class="mb-0" style="display: inline;">{{ i.doctor_category }}</small>
                         </div>
                         {% endfor %}
                     {% else %}
@@ -62,13 +63,7 @@
                             <span>Patients</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="invoices.html">
-                            <i class="fas fa-file-invoice"></i>
-                            <span>Billing and Payment</span>
-                        </a>
-                    </li>
-                 
+                  
                   
                    
                     <li>

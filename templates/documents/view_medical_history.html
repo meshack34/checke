@@ -1,48 +1,94 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Medical History for {{ patient.user.first_name }} {{ patient.user.last_name }}</h1>
+  <style>
+    /* Style for the medical history page */
+    .medical-history-page {
+      margin: 20px;
+    }
 
-  <table class="medical-history-table">
-    <thead>
-      <tr>
-        <th>Medical Record</th>
-        <th>History</th>
-        <th>Review of Systems</th>
-        <th>Examination</th>
-        <th>Diagnosis</th>
-        <th>Treatment</th>
-        <th>Investigation</th>
-        <th>Medication</th>
-        <th>Payment Type</th>
-        <th>Follow-Up Date</th>
-        <th>Doctor</th>
-        <th>Created At</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for record in medical_history %}
-        <tr>
-          <td>Medical Record</td>
-          <td>{{ record.history }}</td>
-          <td>{{ record.review_of_systems.all|join:", " }}</td>
-          <td>{{ record.examination.all|join:", " }}</td>
-          <td>{{ record.diagnosis.all|join:", " }}</td>
-          <td>{{ record.treatment.all|join:", " }}</td>
-          <td>{{ record.investgation.all|join:", " }}</td>
-          <td>{{ record.medication.all|join:", " }}</td>
-          <td>{{ record.payment_type }}</td>
-          <td>{{ record.follow_up_date }}</td>
-          <td>{{ record.doctor }}</td>
-          <td>{{ record.created_at }}</td>
-        </tr>
-      {% empty %}
-        <tr>
-          <td colspan="13">No medical history records found.</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    .page-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
 
-  <a href="{% url 'home' %}">Back to Home</a>
+    .medical-history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .medical-history-table th, .medical-history-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .medical-history-table th {
+      background-color: #f2f2f2;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: #fff;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .back-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+
+  <div class="medical-history-page">
+    <h1 class="page-title">Medical History for {{ patient.user.first_name }} {{ patient.user.last_name }}</h1>
+
+    <table class="medical-history-table">
+      <thead>
+        <tr>
+          <th>Medical Record</th>
+          <th>History</th>
+          <th>Review of Systems</th>
+          <th>Examination</th>
+          <th>Diagnosis</th>
+          <th>Treatment</th>
+          <th>Investigation</th>
+          <th>Medication</th>
+          <th>Payment Type</th>
+          <th>Follow-Up Date</th>
+          <th>Doctor</th>
+          <th>Created At</th>
+          <th>Total Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in medical_history %}
+          <tr>
+            <td>Medical Record</td>
+            <td>{{ record.history }}</td>
+            <td>{{ record.review_of_systems.all|join:", " }}</td>
+            <td>{{ record.examination.all|join:", " }}</td>
+            <td>{{ record.diagnosis.all|join:", " }}</td>
+            <td>{{ record.treatment.all|join:", " }}</td>
+            <td>{{ record.investigation.all|join:", " }}</td>
+            <td>{{ record.medication.all|join:", " }}</td>
+            <td>{{ record.payment_type }}</td>
+            <td>{{ record.follow_up_date }}</td>
+            <td>{{ record.doctor }}</td>
+            <td>{{ record.created_at }}</td>
+            <td>{{ record.calculate_total_price }}</td> <!-- Display the total cost -->
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="14">No medical history records found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a class="back-button" href="{% url 'home' %}">Back to Home</a>
+  </div>
 {% endblock %}

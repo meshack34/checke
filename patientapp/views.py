@@ -6,13 +6,7 @@ from django.http import HttpResponseBadRequest
 from django.contrib import messages
 from .models import MedicalHistoryy, Patient
 from datetime import date
-from .forms import (
-    MedicalHistoryForm,
-    MedicalTreatmentForm,
-    DoctorForm,
-    PatientForm,
-    RegistrationForm,
-)
+from .forms import *
 from .models import (
     MedicalHistoryy,
     Prescription,
@@ -52,20 +46,6 @@ def home(request):
 
     return render(request, 'home.html', context)
 
-
-def patient_statistics(request):
-    # Calculate total patients (users with a specific user_type)
-    total_patients = Account.objects.filter(user_type='Patient').count()
-    today = timezone.now().date()
-    patients_registered_today = Account.objects.filter(date_joined__date=today).count()
-    print(total_patients)
-    context = {
-        'total_patients': total_patients,
-        'patients_registered_today': patients_registered_today,
-        
-    }
-
-    return render(request, 'users/doctor_dashboard.html', context)  # Replace 'your_actual_template.html' with your template name
 
 
 def patientregister(request):
@@ -172,12 +152,12 @@ def logout(request):
 
 
 def doctor_dashboard(request):
-
     current_user = request.user
     current_doctor = get_object_or_404(Doctor, user=current_user)
     specialization = DoctorSpecialization.objects.filter(doctor=current_doctor)
     
-    total_patients = Account.objects.filter(user_type='Patient').count()
+    total_patients = Patient.objects.count()
+    # total_patients = Account.objects.filter(user_type='Patient').count()
     today = timezone.now().date()
     patients_registered_today = Account.objects.filter(date_joined__date=today).count()
     print(total_patients)
@@ -640,38 +620,154 @@ def deleteAppointment(request, appoint_id):
     return redirect('doctor_dashboard')
 
 
-
-
-
 def history(request):
     current_user = request.user
     current_patient = get_object_or_404(Patient, user=current_user)
-    
+
+    # Handling MedicalHistoryy form
     if request.method == 'POST':
         try:
-            medical_history = MedicalHistoryy.objects.get(patient=current_patient, is_processing=False)
+            medical_history = MedicalHistoryy.objects.filter(patient=current_patient, is_processing=False).first()
         except MedicalHistoryy.DoesNotExist:
-            raise ValueError('Cannot Edit')
+            medical_history = None
         
-        form = MedicalHistoryForm(request.POST, instance=medical_history)  # Use the instance argument to update existing object
-        if form.is_valid():
-            # Update the medical history object with form dat
-            medical_history = form.save(commit=False)
-            medical_history.patient = current_patient  # Set the patient field
+
+        medical_form = MedicalHistoryForm(request.POST, instance=medical_history)
+        if medical_form.is_valid():
+            medical_history = medical_form.save(commit=False)
+            medical_history.patient = current_patient
             medical_history.is_processing = True
             medical_history.save()
-            
+
             return redirect('patient_dashboard')
     else:
-        # Load the existing medical history or create a new one if it doesn't exist
-        medical_history, created = MedicalHistoryy.objects.get_or_create(patient=current_patient, is_processing=False)
-        form = MedicalHistoryForm(instance=medical_history)
+        medical_history = MedicalHistoryy.objects.filter(patient=current_patient, is_processing=False).first()
+        medical_form = MedicalHistoryForm(instance=medical_history)
+
+    # Handling FamilyMedicalHistory form
+    if request.method == 'POST':
+        family_form = FamilyMedicalHistoryForm(request.POST)
+        if family_form.is_valid():
+            family_medical_history = family_form.save(commit=False)
+            family_medical_history.patient = current_patient
+            family_medical_history.save()
+
+            return redirect('patient_dashboard')
+    else:
+        family_form = FamilyMedicalHistoryForm()
+
+    # Handling CurrentMedication form
+    if request.method == 'POST':
+        medication_form = CurrentMedicationForm(request.POST)
+        if medication_form.is_valid():
+            current_medication = medication_form.save(commit=False)
+            current_medication.patient = current_patient
+            current_medication.save()
+
+            return redirect('patient_dashboard')
+    else:
+        medication_form = CurrentMedicationForm()
+
+    # Handling Allergy form
+    if request.method == 'POST':
+        allergy_form = AllergyForm(request.POST)
+        if allergy_form.is_valid():
+            allergy = allergy_form.save(commit=False)
+            allergy.patient = current_patient
+            allergy.save()
+
+            return redirect('patient_dashboard')
+    else:
+        allergy_form = AllergyForm()
+
+    # Handling Surgery form
+    if request.method == 'POST':
+        surgery_form = SurgeryForm(request.POST)
+        if surgery_form.is_valid():
+            surgery = surgery_form.save(commit=False)
+            surgery.patient = current_patient
+            surgery.save()
+
+            return redirect('patient_dashboard')
+    else:
+        surgery_form = SurgeryForm()
+
+    # Handling ImmunizationHistory form
+    if request.method == 'POST':
+        immunization_form = ImmunizationHistoryForm(request.POST)
+        if immunization_form.is_valid():
+            immunization = immunization_form.save(commit=False)
+            immunization.patient = current_patient
+            immunization.save()
+
+            return redirect('patient_dashboard')
+    else:
+        immunization_form = ImmunizationHistoryForm()
 
     context = {
-        'form': form,
+        'medical_form': medical_form,
+        'family_form': family_form,
+        'medication_form': medication_form,
+        'allergy_form': allergy_form,
+        'surgery_form': surgery_form,
+        'immunization_form': immunization_form,
     }
     return render(request, 'documents/medical_history.html', context)
 
+
+
+
+# def history(request):
+#     current_user = request.user
+#     current_patient = get_object_or_404(Patient, user=current_user)
+    
+#     if request.method == 'POST':
+#         try:
+#             medical_history = MedicalHistoryy.objects.get(patient=current_patient, is_processing=False)
+#         except MedicalHistoryy.DoesNotExist:
+#             raise ValueError('Cannot Edit')
+        
+#         form = MedicalHistoryForm(request.POST, instance=medical_history)  # Use the instance argument to update existing object
+#         if form.is_valid():
+#             # Update the medical history object with form dat
+#             medical_history = form.save(commit=False)
+#             medical_history.patient = current_patient  # Set the patient field
+#             medical_history.is_processing = True
+#             medical_history.save()
+            
+#             return redirect('patient_dashboard')
+#     else:
+#         medical_history, created = MedicalHistoryy.objects.get_or_create(patient=current_patient, is_processing=False)
+#         form = MedicalHistoryForm(instance=medical_history)
+
+#     context = {
+#         'form': form,
+#     }
+#     return render(request, 'documents/medical_history.html', context)
+
+def view_history(request, patient_id):
+    # Get the patient object or return a 404 page if not found
+    patient = get_object_or_404(Patient, id=patient_id)
+    
+    medical_history = MedicalHistoryy.objects.filter(patient=patient)
+    current_medications = CurrentMedication.objects.filter(patient=patient)
+    allergy_data = Allergy.objects.filter(patient=patient)
+    surgery_data = Surgery.objects.filter(patient=patient)
+    immunization_data = ImmunizationHistory.objects.filter(patient=patient)
+    Family_MedicalHistory =FamilyMedicalHistory.objects.filter(patient=patient)
+    
+    # Create the context dictionary
+    context = {
+        'patient': patient,
+        'medical_history': medical_history,
+        'current_medications':current_medications,
+        'allergy_data': allergy_data,  
+        'surgery_data': surgery_data, 
+        'immunization_data': immunization_data,  
+        'Family_MedicalHistory': Family_MedicalHistory, 
+    }
+
+    return render(request, 'documents/view_history.html', context)
 
 
 def add_prescription(request, patient_id):
@@ -759,8 +855,8 @@ def deletePrescItem(request, pres_id):
 
 def Medication(request, patient_id):
     try:
-        patient = get_object_or_404(Patient, id=patient_id)
         current_user = request.user
+        patient = get_object_or_404(Patient, id=patient_id)
         current_doctor = get_object_or_404(Doctor, user=current_user)
 
         # Check if the current doctor has the medical history of the patient
@@ -813,8 +909,6 @@ from .models import Patient, Medical_History  # Update the model import
 def view_medical_history(request, patient_id):
     # Get the patient object or return a 404 page if not found
     patient = get_object_or_404(Patient, id=patient_id)
-
-    # Retrieve the medical history records for the specific patient
     medical_history = Medical_History.objects.filter(patient=patient)
 
     context = {

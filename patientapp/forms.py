@@ -12,7 +12,7 @@ class MedicalTreatmentForm(forms.ModelForm):
     review_of_systems = forms.ModelMultipleChoiceField(queryset=ReviewofSystem.objects.all(), widget=forms.CheckboxSelectMultiple)
     examination = forms.ModelMultipleChoiceField(queryset=Examination.objects.all(), widget=forms.CheckboxSelectMultiple)
     diagnosis = forms.ModelMultipleChoiceField(queryset=Diagnosis.objects.all(), widget=forms.CheckboxSelectMultiple)
-    investgation = forms.ModelMultipleChoiceField(queryset=Investgation.objects.all(), widget=forms.CheckboxSelectMultiple)
+    investigation = forms.ModelMultipleChoiceField(queryset=Investigation.objects.all(), widget=forms.CheckboxSelectMultiple)
     medication = forms.ModelMultipleChoiceField(queryset=Medication.objects.all(), widget=forms.CheckboxSelectMultiple)
     follow_up_date = DateField(widget=DateInput)
     class Meta:
@@ -85,8 +85,6 @@ class MedicalHistoryForm(forms.ModelForm):
         fields = [
             'reason',
             'weight',
-            'previous_operation',
-            'current_medication',
             'other_illness',
             'other_information',
         ]
@@ -96,4 +94,82 @@ class MedicalHistoryForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
-   
+
+from django import forms
+
+class FamilyMedicalHistoryForm(forms.ModelForm):
+    class Meta:
+        model = FamilyMedicalHistory
+        fields = [
+            'medical_condition',
+            'affected_member_name',
+            'relationship',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(FamilyMedicalHistoryForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+from django import forms
+from .models import CurrentMedication
+
+class CurrentMedicationForm(forms.ModelForm):
+    class Meta:
+        model = CurrentMedication
+        fields = [
+            'medicine_name',
+            'reason',
+            'date',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(CurrentMedicationForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+from django import forms
+from .models import Allergy
+
+class AllergyForm(forms.ModelForm):
+    class Meta:
+        model = Allergy
+        fields = [
+            'allergy_name',
+            'severity',
+            'diagnosis_date',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(AllergyForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+from django import forms
+from .models import Surgery
+
+class SurgeryForm(forms.ModelForm):
+    class Meta:
+        model = Surgery
+        fields = [
+            'surgery_type',
+            'surgery_date',
+            'reason',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(SurgeryForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+from django import forms
+from .models import ImmunizationHistory
+
+class ImmunizationHistoryForm(forms.ModelForm):
+    class Meta:
+        model = ImmunizationHistory
+        fields = [
+            'vaccine_name',
+            'date',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(ImmunizationHistoryForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'

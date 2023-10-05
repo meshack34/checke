@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <style>
+    /* Style for the medical history table */
+    .medical-history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .medical-history-table th, .medical-history-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .medical-history-table th {
+      background-color: #f2f2f2;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: #fff;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .back-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+
+  <div class="medical-history-page">
+    <h1 class="page-title">Medical History for {{ patient.user.first_name }} {{ patient.user.last_name }}</h1>
+
+    <!-- Medical History Table -->
+    <h2>Medical History</h2>
+    <table class="medical-history-table">
+      <thead>
+        <tr>
+          <th>Reason For Appointment</th>
+          <th>Weight</th>
+          <th>Other Illness</th>
+          <th>Other Information</th>
+          <th>Doctor</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in medical_history %}
+          <tr>
+            <td>{{ record.reason }}</td>
+            <td>{{ record.weight }}</td>
+            <td>{{ record.other_illness }}</td>
+            <td>{{ record.other_information }}</td>
+            <td>{{ record.patient.user.first_name }}</td>
+            <td>{{ record.date_created }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8">No medical history records found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Allergy Table -->
+    <h2>Current Medication</h2>
+    <table class="medical-history-table">
+      <thead>
+        <tr>
+          <th>medicine Name</th>
+          <th>reason</th>
+          <th> Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for current_medication in current_medications %}
+        <tr>
+          <td>{{ current_medication.medicine_name }}</td>
+          <td>{{ current_medication.reason }}</td>
+          <td>{{ current_medication.date }}</td>
+        </tr>
+      {% empty %}
+          <tr>
+            <td colspan="3">No current medication records found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+<!-- Allergy Table -->
+<h2>Allergies</h2>
+<table class="medical-history-table">
+  <thead>
+    <tr>
+      <th>Allergy Name</th>
+      <th>Severity</th>
+      <th>Diagnosis Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for allergy_record in allergy_data %}
+      <tr>
+        <td>{{ allergy_record.allergy_name }}</td>
+        <td>{{ allergy_record.severity }}</td>
+        <td>{{ allergy_record.diagnosis_date }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="3">No allergy records found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+    <!-- Surgery Table -->
+    <h2>Surgeries</h2>
+    <table class="medical-history-table">
+      <thead>
+        <tr>
+          <th>Surgery Type</th>
+          <th>Surgery Date</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for surgery_record in surgery_data %}
+          <tr>
+            <td>{{ surgery_record.surgery_type }}</td>
+            <td>{{ surgery_record.surgery_date }}</td>
+            <td>{{ surgery_record.reason }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3">No surgery records found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Immunization History Table -->
+    <h2>Immunization History</h2>
+    <table class="medical-history-table">
+      <thead>
+        <tr>
+          <th>Vaccine Name</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for immunization_record in immunization_data %}
+          <tr>
+            <td>{{ immunization_record.vaccine_name }}</td>
+            <td>{{ immunization_record.date }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="2">No immunization history records found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+<!-- ... (previous code) ... -->
+
+<!-- Family Medical History Table -->
+<h2>Family Medical History</h2>
+<table class="medical-history-table">
+  <thead>
+    <tr>
+      <th>Medical Condition</th>
+      <th>Affected Member Name</th>
+      <th>Relationship</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for family_record in Family_MedicalHistory %}
+      <tr>
+        <td>{{ family_record.medical_condition }}</td>
+        <td>{{ family_record.affected_member_name }}</td>
+        <td>{{ family_record.relationship }}</td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="3">No family medical history records found.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- ... (rest of the code) ... -->
+
+    <a class="back-button" href="{% url 'home' %}">Back to Home</a>
+  </div>
+{% endblock %}

@@ -35,7 +35,7 @@ admin.site.register(Treatment)
 admin.site.register(ReviewofSystem)
 admin.site.register(Examination)
 admin.site.register(Diagnosis)
-admin.site.register(Investgation)
+admin.site.register(Investigation)
 admin.site.register(Medication)
 admin.site.register(PaymentType)
 

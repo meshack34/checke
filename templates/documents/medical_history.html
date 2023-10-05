@@ -3,66 +3,198 @@
 
 {% block content %}
 <div class="content">
-	<div class="container-fluid">
+    <div class="container-fluid">
 
-		<div class="row">
+        <div class="row">
+            <!-- Medical History Form -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Medical History</h4>
+                        <form action="{% url 'history' %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Reason For Appointment <span class="text-danger">*</span></label>
+                                {{ medical_form.reason }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Weight</label>
+                                {{ medical_form.weight }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Other Illness <small>(If Any)</small></label>
+                                {{ medical_form.other_illness }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Other Information <small>(If Any)</small></label>
+                                {{ medical_form.other_information }}
+                            </div>
+                            <button type="button" class="btn btn-primary submit-btn">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /Medical History Form -->
 
-			<div class="col-md-7 col-lg-8 col-xl-9">
-			
-				<!-- Basic Information -->
-				<div class="card">
-					<div class="card-body">
-						<h4 class="card-title">Medical History</h4>
+            <!-- Sidebar Forms -->
+            <div class="col-md-6">
+                <!-- Current Medication Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Current Medication</h4>
+                        <form action="{% url 'history' %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Medicine Name</label>
+                                {{ medication_form.medicine_name }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Reason</label>
+                                {{ medication_form.reason }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control datepicker" name="date" readonly>
+                            </div>
+                            <button type="button" class="btn btn-primary submit-btn">Save Medication</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /Current Medication Form -->
 
-						<div class="row form-row">
-                            <div class="col-md-12">
-								<form action="{% url 'history' %}" method="POST">
-									{% csrf_token %}
-								<div class="form-group">
-									<label>Reason For Appointment <span class="text-danger">*</span></label>
-                                    {{ form.reason }}
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="form-group">
-									<label>Weight</label>
-                                    {{ form.weight }}
-								</div>
-							</div>
-						
-							<div class="col-md-12">
-								<div class="form-group">
-									<label>Previous Operation <small>(If Any)</small></label>
-									{{ form.previous_operation }}
-								</div>
-							</div>
-							<div class="col-md-12">
-								<div class="form-group">
-									<label>Current Medication <small>(If Any)</small></label>
-									{{ form.current_medication }}
-								</div>
-							</div>
-							<div class="col-md-12">
-								<div class="form-group mb-0">
-									<label>Other Illness <small>(If Any)</small></label>
-									{{ form.other_illness }}
-								</div>
-							</div>
+                <!-- Allergy Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Allergy</h4>
+                        <form action="{% url 'history' %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Allergy Name</label>
+                                {{ allergy_form.allergy_name }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Severity</label>
+                                {{ allergy_form.severity }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Diagnosis Date</label>
+                                <input type="text" class="form-control datepicker" name="diagnosis_date" readonly>
+                            </div>
+                            <button type="button" class="btn btn-primary submit-btn">Save Allergy</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /Allergy Form -->
+            </div>
+            <!-- /Sidebar Forms -->
 
-                            <div class="col-md-12">
-								<div class="form-group mb-0">
-									<label>Other Information <small>(If Any)</small></label>
-									{{ form.other_information }}
-								</div>
-							</div>
-						</div>
-                        <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
-				    </form>
-				</div>
-			</div>
-			<!-- /Basic Information -->
-		</div>
-	</div>
+            <!-- Additional Forms -->
+            <div class="col-md-6">
+                <!-- Surgery Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Surgery</h4>
+                        <form action="{% url 'history' %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Surgery Type</label>
+                                {{ surgery_form.surgery_type }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Surgery Date</label>
+                                <input type="text" class="form-control datepicker" name="surgery_date" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Reason</label>
+                                {{ surgery_form.reason }}
+                            </div>
+                            <button type="button" class="btn btn-primary submit-btn">Save Surgery</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /Surgery Form -->
+            </div>
+            <div class="col-md-6">
+                <!-- Immunization History Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Immunization History</h4>
+                        <form action="{% url 'history' %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Vaccine Name</label>
+                                {{ immunization_form.vaccine_name }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date</label>
+                                <input type="text" class="form-control datepicker" name="immunization_date" readonly>
+                            </div>
+                            <button type="button" class="btn btn-primary submit-btn">Save Immunization</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /Immunization History Form -->
+            </div>
+        </div>
+        <!-- /Additional Forms -->
+
+    </div>
 </div>
 <!-- /Page Content -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<script>
+	$(document).ready(function() {
+		$('.datepicker').datepicker({
+			format: 'yyyy-mm-dd', // You can adjust the date format
+			autoclose: true,
+			todayHighlight: true,
+			keyboardNavigation: false,
+			forceParse: false,
+			showOnFocus: false,
+		});
+	
+		// Function to handle form submission via AJAX
+		function submitForm(form) {
+			$.ajax({
+				url: form.attr('action'),
+				method: 'POST',
+				data: form.serialize(),
+				success: function(response) {
+					// Clear the form
+					form[0].reset();
+	
+					// Show a success message
+					var successMessage = $('<div class="alert alert-success mt-3">Form submitted successfully.</div>');
+					form.after(successMessage);
+	
+					// Change the button text to indicate success
+					var submitButton = form.find('.submit-btn');
+					submitButton.text('Submitted').attr('disabled', true);
+	
+					// Remove the success message after a few seconds (you can adjust the delay)
+					setTimeout(function() {
+						successMessage.remove();
+						submitButton.text('Save Changes').attr('disabled', false);
+					}, 3000); // 3 seconds delay for the success message
+				},
+				error: function(error) {
+					// Handle errors (e.g., show an error message)
+					console.error('Error submitting form:', error);
+				}
+			});
+		}
+	
+		// Handle form submissions when the submit button is clicked
+		$('.submit-btn').click(function(event) {
+			event.preventDefault(); // Prevent the default form submission
+			var form = $(this).closest('form');
+			submitForm(form);
+		});
+	});
+	</script>
+	
+
 {% endblock content %}

@@ -112,7 +112,9 @@ class Patient(models.Model):
             age = today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
             return age
         return None
-
+    
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
 
     
 
@@ -131,8 +133,9 @@ class Doctor(models.Model):
     description = models.TextField(blank=True)
 
     def __str__(self):
-        return self.user.first_name
+        return f'{self.user.first_name} {self.user.last_name}'
 
+    
 
 class DoctorSpecialization(models.Model):
     doctor_category  = models.CharField(max_length=50, null=True)
@@ -191,6 +194,36 @@ class MedicalRecords(models.Model):
         return self.patient.user.first_name
 
 
+
+class CurrentMedication(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    medicine_name = models.CharField(max_length=100)
+    reason = models.CharField(max_length=200)
+    date = models.DateField()
+
+class Allergy(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    allergy_name = models.CharField(max_length=100)
+    severity = models.CharField(max_length=50)
+    diagnosis_date = models.DateField()
+
+class Surgery(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    surgery_type = models.CharField(max_length=100)
+    surgery_date = models.DateField()
+    reason = models.CharField(max_length=200)
+
+class ImmunizationHistory(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    vaccine_name = models.CharField(max_length=100)
+    date = models.DateField()
+
+class FamilyMedicalHistory(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    medical_condition = models.CharField(max_length=100)
+    affected_member_name = models.CharField(max_length=100)
+    relationship = models.CharField(max_length=100)
+
 class MedicalHistoryy(models.Model):
     first_name = models.CharField(max_length=20, null=True)
     last_name = models.CharField(max_length=20, null=True)
@@ -204,8 +237,6 @@ class MedicalHistoryy(models.Model):
     date_of_birth = models.DateField(null=True)
     age_years = models.PositiveIntegerField(null=True)
     
-    previous_operation = models.CharField(max_length=200,blank=True)
-    current_medication = models.CharField(max_length=200,blank=True)
     other_illness = models.CharField(max_length=200,blank=True)
     other_information = models.CharField(max_length=200,blank=True)
     is_processing = models.BooleanField(default=False)
@@ -231,6 +262,7 @@ class Prescription(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING, null=True)
     patient = models.ForeignKey(Patient, on_delete=models.DO_NOTHING, null=True)
     uploaded_date = models.DateTimeField(default=datetime.now, blank=True)
+   
     
 class Treatment(models.Model):
     name = models.CharField(max_length=255)
@@ -254,7 +286,7 @@ class Diagnosis(models.Model):
     def __str__(self):
         return f'{self.name}'
     
-class Investgation(models.Model):
+class Investigation(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
@@ -279,7 +311,7 @@ class Medical_History(models.Model):
     examination = models.ManyToManyField(Examination)
     diagnosis = models.ManyToManyField(Diagnosis)
     treatment = models.ManyToManyField(Treatment)
-    investgation = models.ManyToManyField(Investgation)
+    investigation = models.ManyToManyField(Investigation)
     medication = models.ManyToManyField(Medication)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE)
     follow_up_date = models.DateField(null=True)
@@ -292,7 +324,7 @@ class Medical_History(models.Model):
     def calculate_total_price(self):
     # Calculate total price based on selected categories, categories2, and categories3
         total_price = sum(category.price for category in self.treatment.all())
-        total_price += sum(category.price for category in self.investgation.all())
+        total_price += sum(category.price for category in self.investigation.all())
         total_price += sum(category.price for category in self.medication.all())
         return total_price
     

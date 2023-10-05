@@ -20,10 +20,15 @@
                                                 </div>
                                             </div>
                                             <div class="dash-widget-info">
-                                                <h6>Patients Registered:</h6>
-                                                <p>{{ patients_registered_today }}</p>
-                                            </div>
+                                                <h6>Total Patients:</h6> <br>
+                                                <p>{{ total_patients }}</p>
+                                            </div><br>
+                                          
+                                            
                                         </div>
+                                    </div>  <div class="dash-widget-info">
+                                        <h6>Patients Registered Today :</h6><br>
+                                        <p>{{ patients_registered_today }}</p>
                                     </div>
                                 </div>
 
@@ -56,7 +61,7 @@
                                                                     {% comment %} <a href="{% url 'current_patient' patient_appointment.patient.id %}" class="avatar avatar-sm mr-2">
                                                                         <img class="avatar-img rounded-circle" src="{{ patient_appointment.patient.profile_image.url }}" alt="User Image">
                                                                     </a> {% endcomment %}
-                                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}">{{ patient_appointment.patient.user.first_name }}</a>
+                                                                    <a href="{% url 'current_patient' patient_appointment.patient.id %}">{{ patient_appointment.patient.user.first_name }} {{ patient_appointment.patient.user.last_name }}</a>
                                                                 </h2>
                                                             </td>
                                                             <td>{{ patient_appointment.date_created }} <span class="d-block text-info"></span></td>

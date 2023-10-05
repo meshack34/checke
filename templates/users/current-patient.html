@@ -31,7 +31,7 @@
     <div class="patient-info">
         <ul>
             <li>Phone <span>{{ current_patient.user.phone_number }}</span></li>
-            <li>Age <span>{{ current_patient.age }} Years</span></li>
+            <li>Age <span>{{ current_patient.age_years }} Years</span></li>
             <li>Blood Group <span>{{ current_patient.blood_group }}</span></li>
             <li>Gender <span>{{ current_patient.gender }}</span></li>
         </ul>
@@ -52,7 +52,7 @@
                 <a class="nav-link active" href="#pres" data-toggle="tab"><span>Prescription</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#billing" data-toggle="tab"><span>Billing</span></a>
+                <a class="nav-link" href="#billing" data-toggle="tab"><span>Billing and Treatment</span></a>
             </li> 
         </ul>
     </div>
@@ -65,10 +65,7 @@
             
                 <a href="{% url 'add_prescription' current_patient.id %}" class="add-new-btn">Add Prescription</a>
             </div>
-            <div class="text-right">
-            
-                <a href="{% url 'patient-medicals' current_patient.id %}" class="add-new-btn">patient_treatment_history</a>
-            </div>
+           
             <div class="card card-table mb-0">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -78,7 +75,7 @@
                                     <th>ID</th>
                                     <th>Patient Name</th>	
                                     <th>Prescription File</th>
-                                     <th>Action </th>
+                                     <th>View Medical History </th>
                                 </tr>     
                             </thead>
                             <tbody>
@@ -118,10 +115,13 @@
         
         <!-- Billing Tab -->
         <div class="tab-pane" id="billing">
-            <div class="text-right">
+            {% comment %} <div class="text-right">
                 <a button class="btn btn-info btn-sm" href="{% url 'patient-medicals' current_patient.id %}">
                     Add Treatment</button></a>
-                {% comment %} <a class="add-new-btn" href="add-billing.html">Add Billing</a> {% endcomment %}
+            </div> {% endcomment %}
+            <div class="text-right">
+            
+                <a href="{% url 'patient-medicals' current_patient.id %}" class="add-new-btn"> Add Treatment </a>
             </div>
             <div class="card card-table mb-0">
                 <div class="card-body">
