@@ -191,7 +191,13 @@ def patient_dashboard(request):
     prescription = Prescription.objects.filter(patient=current_patient)
 
     prescription_status = PrescriptionStatus.objects.filter(patient=current_patient,is_uploaded=True)
-   
+    for status in prescription_status:
+        if status.newprescription:
+            print(status.newprescription.name)
+        else:
+            print("Prescription not found for this status.")
+
+
     context = {
         'patient': current_patient,
         'current_appointment':current_appointment,
@@ -704,6 +710,17 @@ def history(request):
     else:
         immunization_form = ImmunizationHistoryForm()
 
+    if request.method == 'POST':
+        FamilyMedicalHi_form = FamilyMedicalHistoryForm(request.POST)
+        if FamilyMedicalHi_form.is_valid():
+            familyhistory = FamilyMedicalHi_form.save(commit=False)
+            familyhistory.patient = current_patient
+            familyhistory.save()
+
+            return redirect('patient_dashboard')
+    else:
+        FamilyMedicalHi_form = FamilyMedicalHistoryForm()
+
     context = {
         'medical_form': medical_form,
         'family_form': family_form,
@@ -711,39 +728,12 @@ def history(request):
         'allergy_form': allergy_form,
         'surgery_form': surgery_form,
         'immunization_form': immunization_form,
+        'FamilyMedicalHi_form':FamilyMedicalHi_form,
     }
     return render(request, 'documents/medical_history.html', context)
 
 
 
-
-# def history(request):
-#     current_user = request.user
-#     current_patient = get_object_or_404(Patient, user=current_user)
-    
-#     if request.method == 'POST':
-#         try:
-#             medical_history = MedicalHistoryy.objects.get(patient=current_patient, is_processing=False)
-#         except MedicalHistoryy.DoesNotExist:
-#             raise ValueError('Cannot Edit')
-        
-#         form = MedicalHistoryForm(request.POST, instance=medical_history)  # Use the instance argument to update existing object
-#         if form.is_valid():
-#             # Update the medical history object with form dat
-#             medical_history = form.save(commit=False)
-#             medical_history.patient = current_patient  # Set the patient field
-#             medical_history.is_processing = True
-#             medical_history.save()
-            
-#             return redirect('patient_dashboard')
-#     else:
-#         medical_history, created = MedicalHistoryy.objects.get_or_create(patient=current_patient, is_processing=False)
-#         form = MedicalHistoryForm(instance=medical_history)
-
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'documents/medical_history.html', context)
 
 def view_history(request, patient_id):
     # Get the patient object or return a 404 page if not found
@@ -851,6 +841,62 @@ def deletePrescItem(request, pres_id):
     return redirect(request.META.get('HTTP_REFERER')) #returning previous url/page
 
 
+# def Medication(request, patient_id):
+#     try:
+#         current_user = request.user
+#         patient = get_object_or_404(Patient, id=patient_id)
+#         current_doctor = get_object_or_404(Doctor, user=current_user)
+
+#         # Check if the current doctor has the medical history of the patient
+#         doctor_for_patient = MedicalHistoryy.objects.get(patient=patient, doctor=current_doctor)
+#         accepted_patient = MedicalHistoryy.objects.get(id=patient_id)
+#         speciality = DoctorSpecialization.objects.get(doctor=current_doctor)
+
+#         if request.method == 'POST':
+#             form = MedicalTreatmentForm(request.POST)
+#             if form.is_valid():
+#                 # Save the form with the current patient and doctor
+#                 medical_history = form.save(commit=False)
+#                 medical_history.save()
+                
+#                 # Handle the many-to-many relationships with selected checkboxes
+#                 form.save_m2m()
+
+#                 messages.success(request, f'Successfully Added Medical History for {patient}')
+#                 return redirect('home')
+#         else:
+#             # Initialize the form with the current patient
+#             form = MedicalTreatmentForm(initial={'patient': patient})
+
+        
+# # Assuming you have calculated the costs for each section in your view.
+#             costs_treatment = {...}  # Dictionary with treatment costs
+#             costs_review_of_systems = {...}  # Dictionary with review_of_systems costs
+#             costs_examination = {...}  # Dictionary with examination costs
+#             # Repeat this for other sections
+
+#             context = {
+#                 'form': form,
+#                 'current_patient': patient,
+#                 'doctor_for_patient': doctor_for_patient,
+#                 'current_doctor': current_doctor,
+#                 'speciality': speciality,
+#                 'accepted_patient': accepted_patient,
+#                 'costs_treatment': costs_treatment,
+#                 'costs_review_of_systems': costs_review_of_systems,
+#                 'costs_examination': costs_examination,
+#                 # Add costs for other sections here
+#             }
+
+#         return render(request, 'documents/medical_history_form.html', context)
+
+#     except Patient.DoesNotExist:
+#         # Handle the case where the patient does not exist
+#         return HttpResponseBadRequest("Patient not found")
+#     except Doctor.DoesNotExist:
+#         # Handle the case where the doctor does not exist
+#         return HttpResponseBadRequest("Doctor not found")
+
 
 
 def Medication(request, patient_id):
@@ -899,6 +945,50 @@ def Medication(request, patient_id):
     except Doctor.DoesNotExist:
         # Handle the case where the doctor does not exist
         return HttpResponseBadRequest("Doctor not found")
+
+# def Medication(request, patient_id):
+#     try:
+#         current_user = request.user
+#         patient = get_object_or_404(Patient, id=patient_id)
+#         current_doctor = get_object_or_404(Doctor, user=current_user)
+
+#         # Check if the current doctor has the medical history of the patient
+#         doctor_for_patient = MedicalHistoryy.objects.get(patient=patient, doctor=current_doctor)
+#         accepted_patient = MedicalHistoryy.objects.get(id=patient_id)
+#         speciality = DoctorSpecialization.objects.get(doctor=current_doctor)
+
+#         if request.method == 'POST':
+#             form = MedicalTreatmentForm(request.POST)
+#             if form.is_valid():
+#                 # Save the form with the current patient and doctor
+#                 medical_history = form.save(commit=False)
+#                 medical_history.save()
+                
+#                 # Handle the many-to-many relationships with selected checkboxes
+#                 form.save_m2m()
+
+#                 messages.success(request, f'Successfully Added Medical History for {patient}')
+#                 return redirect('home')
+#         else:
+#             form = MedicalTreatmentForm(initial={'patient': patient})
+
+#         context = {
+#             'form': form,
+#             'current_patient': patient,
+#             'doctor_for_patient': doctor_for_patient,
+#             'current_doctor': current_doctor,
+#             'speciality': speciality,
+#             'accepted_patient': accepted_patient,
+#         }
+
+#         return render(request, 'documents/medical_history_form.html', context)
+
+#     except Patient.DoesNotExist:
+#         # Handle the case where the patient does not exist
+#         return HttpResponseBadRequest("Patient not found")
+#     except Doctor.DoesNotExist:
+#         # Handle the case where the doctor does not exist
+#         return HttpResponseBadRequest("Doctor not found")
 
 from django.shortcuts import render, get_object_or_404
 from .models import Patient, MedicalHistoryy

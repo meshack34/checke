@@ -79,11 +79,8 @@
                                         <tr>
                                             <th style="min-width: 200px">Drug Name</th>
                                             <th style="min-width: 100px">Dosage</th>
-                                            <th style="min-width: 100px">Days</th>
+                                            <th style="min-width: 100px">Frequency</th>
                                             <th style="min-width: 100px">Action</th>
-                                            {% comment %} <th style="min-width: 100px">Days</th>
-                                            <th style="min-width: 100px;">Time</th> {% endcomment %}
-                                            {% comment %} <th style="min-width: 80px;"></th> {% endcomment %}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -110,7 +107,7 @@
                                                 <input class="form-control" type="text" name="quantity" placeholder="Dosage">
                                             </td>
                                             <td>
-                                                <input class="form-control" type="text" name="days" placeholder="Days">
+                                                <input class="form-control" type="text" name="days" placeholder="Frequency">
                                             </td>
                                            
                                             <td>
@@ -136,7 +133,7 @@
                                
                                 <div class="sign-name">
                                     <p class="mb-0">( Dr. {{current_doctor.user.first_name}} {{current_doctor.user.last_name}} )</p>
-                                    <span class="text-muted">Signature</span>
+                                    
                                 </div>
                             </div>
                         </div>

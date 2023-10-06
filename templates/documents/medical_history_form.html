@@ -1,11 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    /* Add your custom CSS styles here */
+    .custom-card {
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        padding: 20px;
+    }
+
+    .custom-header {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    /* Style the label and input field */
+    .custom-label {
+        font-weight: bold;
+    }
+
+    /* Style the input field container */
+    .custom-input {
+        /* Add custom styling for the input container */
+    }
+
+    /* Style the select field within the container */
+    .custom-input select {
+        width: 150px; /* Adjust the width as needed */
+        padding: 5px;
+        font-size: 14px; /* Adjust the font size as needed */
+        height: auto; /* Allow the dropdown portion to expand as needed */
+        border: 1px solid #ccc; /* Add a border for better visibility */
+    }
+
+    /* Style the selected option */
+    .custom-input select option:checked {
+        height: 20px; /* Set the height for the selected option */
+    }
+</style>
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
+            <div class="card custom-card"> <!-- Add the custom-card class to the card -->
+                <div class="card-header custom-header"> <!-- Add the custom-header class to the card-header -->
                     <h1 class="text-center">Add Medical Treatment</h1>
                     <p class="text-center">Patient: {{ current_patient }} | Doctor: {{ current_doctor }}</p>
                 </div>
@@ -13,14 +51,18 @@
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="{{ form.patient.id_for_label }}">Patient:</label>
-                            {{ form.patient }}
+                            <label for="{{ form.patient.id_for_label }}" class="custom-label">Patient:</label>
+                            <div class="custom-input">
+                                {{ form.patient }}
+                            </div>
                         </div>
-                        
+
                         <!-- Doctor field (if needed) -->
                         <div class="form-group">
                             <label for="{{ form.doctor.id_for_label }}">Doctor:</label>
-                            {{ form.doctor }}
+                            <div class="custom-input">
+                                {{ form.doctor }}
+                            </div>
                         </div>
                         <!-- Display form errors if any -->
                         {% if form.errors %}
@@ -40,6 +82,7 @@
                         </div>
 
                         <!-- Treatment options -->
+                        
                         <fieldset class="mb-3">
                             <legend>Treatment</legend>
                             {% for choice in form.treatment %}
@@ -105,18 +148,37 @@
                             {% endfor %}
                         </fieldset>
 
+                        <!-- consultations options -->
+                        <fieldset class="mb-3">
+                            <legend>Consultation</legend>
+                            {% for choice in form.consultation %}
+                            <div class="form-check">
+                                {{ choice }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                            </div>
+                            {% endfor %}
+                        </fieldset>
+
                         <!-- Payment Type -->
+                       
                         <div class="form-group">
                             <label for="{{ form.payment_type.id_for_label }}">Payment Type:</label>
-                            {{ form.payment_type }}
+                            <div class="custom-input">
+                                {{ form.payment_type }}
+                            </div>
                         </div>
-
+                      
+                        <!-- <div class="form-group">
+                            <label for="{{ form.payment_type.id_for_label }}">Payment Type:</label>
+                                 {{ form.payment_type }}
+                           
+                        </div> -->
+                        <!-- Follow-up date -->
                         <!-- Follow-up date -->
                         <div class="form-group">
                             <label for="{{ form.follow_up_date.id_for_label }}">Follow-up Date:</label>
                             {{ form.follow_up_date }}
                         </div>
-
                         <!-- Submit button -->
                         <button type="submit" class="btn btn-primary">Add Medical Treatment</button>
                     </form>
@@ -124,5 +186,21 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            // Initialize the date picker
+            $(".datepicker").datepicker({
+                dateFormat: "yy-mm-dd", // You can change the date format as needed
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                yearRange: "-100:+10", // Adjust the year range as needed
+            });
+        });
+    </script>
 </div>
 {% endblock content %}

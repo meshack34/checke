@@ -14,6 +14,7 @@ class MedicalTreatmentForm(forms.ModelForm):
     diagnosis = forms.ModelMultipleChoiceField(queryset=Diagnosis.objects.all(), widget=forms.CheckboxSelectMultiple)
     investigation = forms.ModelMultipleChoiceField(queryset=Investigation.objects.all(), widget=forms.CheckboxSelectMultiple)
     medication = forms.ModelMultipleChoiceField(queryset=Medication.objects.all(), widget=forms.CheckboxSelectMultiple)
+    consultation = forms.ModelMultipleChoiceField(queryset=Consultation.objects.all(), widget=forms.CheckboxSelectMultiple)
     follow_up_date = DateField(widget=DateInput)
     class Meta:
         model = Medical_History
@@ -171,5 +172,19 @@ class ImmunizationHistoryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ImmunizationHistoryForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+class FamilyMedicalHistoryForm(forms.ModelForm):
+    class Meta:
+        model = FamilyMedicalHistory
+        fields = [
+            'medical_condition',
+            'affected_member_name',
+            'relationship',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(FamilyMedicalHistoryForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'

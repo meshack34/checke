@@ -127,8 +127,34 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Date</label>
-                                <input type="text" class="form-control datepicker" name="immunization_date" readonly>
+                                <input type="text" class="form-control datepicker" name="date" readonly>
                             </div>
+                            <button type="button" class="btn btn-primary submit-btn">Save Immunization</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- /Immunization History Form -->
+            </div>
+
+            <div class="col-md-6">
+                <!-- Immunization History Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Family Medical History</h4>
+                        <form action="{% url 'history' %}" method="POST" class="ajax-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Medical Condition</label>
+                                {{ FamilyMedicalHi_form.medical_condition }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Affected Member Name</label>
+                                {{ FamilyMedicalHi_form.affected_member_name }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Relationship</label>
+                                {{ FamilyMedicalHi_form.relationship }}
+                            </div>	
                             <button type="button" class="btn btn-primary submit-btn">Save Immunization</button>
                         </form>
                     </div>

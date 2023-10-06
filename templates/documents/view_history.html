@@ -47,7 +47,7 @@
           <th>Weight</th>
           <th>Other Illness</th>
           <th>Other Information</th>
-          <th>Doctor</th>
+          <th>Patient</th>
           <th>Created At</th>
         </tr>
       </thead>
@@ -194,6 +194,8 @@
 
 <!-- ... (rest of the code) ... -->
 
-    <a class="back-button" href="{% url 'home' %}">Back to Home</a>
+    <a class="back-button" href="{% url 'doctor_dashboard' %}" style="display: block; text-align: center; margin: 0 auto; margin-top: 20px;">Back to Home</a>
+
+    <br><br>
   </div>
 {% endblock %}

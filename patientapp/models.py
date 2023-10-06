@@ -155,6 +155,8 @@ class PatientAppointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.DO_NOTHING, null=True)
     month = models.CharField(max_length=50, null=True)
     date = models.CharField(max_length=50, null=True)
+    def __str__(self):
+        return self.patient
 
 
 # for doctor only. Doc will select time slot for his/her appointment
@@ -172,14 +174,6 @@ class AppointmentTime(models.Model):
     def __str__(self):
         return self.day
 
-class PrescriptionStatus(models.Model):
-    is_uploaded= models.BooleanField(default=False)
-    doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, null=True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
-    date_created = models.DateTimeField(default=datetime.now, blank=True)
-
-    def __int__(self):
-        return self.id
 
     
 
@@ -262,8 +256,19 @@ class Prescription(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.DO_NOTHING, null=True)
     patient = models.ForeignKey(Patient, on_delete=models.DO_NOTHING, null=True)
     uploaded_date = models.DateTimeField(default=datetime.now, blank=True)
+    def __int__(self):
+        return self.id
    
-    
+class PrescriptionStatus(models.Model):
+    is_uploaded= models.BooleanField(default=False)
+    newprescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, null=True)
+    doctor = models.ForeignKey("Doctor", on_delete=models.CASCADE, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, null=True)
+    date_created = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __int__(self):
+        return self.id
+
 class Treatment(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
@@ -272,27 +277,35 @@ class Treatment(models.Model):
     
 class ReviewofSystem(models.Model):
     name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.price}'
     
 
 class Examination(models.Model):
     name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.price}'
     
 class Diagnosis(models.Model):
     name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.price}'
     
 class Investigation(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-
     def __str__(self):
         return f'{self.name} - {self.price}'
     
+class Consultation(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    def __str__(self):
+        return f'{self.name} - {self.price}'
+       
 class Medication(models.Model):
     name = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
@@ -313,19 +326,22 @@ class Medical_History(models.Model):
     treatment = models.ManyToManyField(Treatment)
     investigation = models.ManyToManyField(Investigation)
     medication = models.ManyToManyField(Medication)
+    consultation = models.ManyToManyField(Consultation)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE)
     follow_up_date = models.DateField(null=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return f'{self.patient.user.first_name} - {self.patient.user.last_name}'
-    
     def calculate_total_price(self):
     # Calculate total price based on selected categories, categories2, and categories3
-        total_price = sum(category.price for category in self.treatment.all())
+        total_price = sum(category.price for category in self.review_of_systems.all())
+        total_price += sum(category.price for category in self.examination.all())
+        total_price += sum(category.price for category in self.diagnosis.all())
+        total_price += sum(category.price for category in self.treatment.all())
         total_price += sum(category.price for category in self.investigation.all())
         total_price += sum(category.price for category in self.medication.all())
+        total_price += sum(category.price for category in self.consultation.all())
         return total_price
     
 

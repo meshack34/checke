@@ -46,15 +46,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'patient_dashboard' %}">
-                            <i class="fas fa-prescription-bottle-alt"></i>
-                            <span>Prescription</span>
+                        <a href="{% url 'view_history' patient.id %}">
+                            <i class="fas fa-calendar"></i>
+                            <span>Medical History</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'patient_dashboard' %}">
-                            <i class="fas fa-dollar-sign"></i>
-                            <span>Billing and Payment</span>
+                        <a href="{% url 'view_medical_history' patient.id %}">
+                            <i class="fas fa-calendar"></i>
+                            <span>Billing & Payment </span>
                         </a>
                     </li>
                     <li>

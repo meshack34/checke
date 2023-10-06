@@ -57,6 +57,7 @@
           <th>Treatment</th>
           <th>Investigation</th>
           <th>Medication</th>
+          <th>Consultation</th>
           <th>Payment Type</th>
           <th>Follow-Up Date</th>
           <th>Doctor</th>
@@ -75,6 +76,7 @@
             <td>{{ record.treatment.all|join:", " }}</td>
             <td>{{ record.investigation.all|join:", " }}</td>
             <td>{{ record.medication.all|join:", " }}</td>
+            <td>{{ record.consultation.all|join:", " }}</td>
             <td>{{ record.payment_type }}</td>
             <td>{{ record.follow_up_date }}</td>
             <td>{{ record.doctor }}</td>

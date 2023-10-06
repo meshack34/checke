@@ -94,8 +94,11 @@
         <table class="table table-hover table-center mb-0">
             <thead>
                 <tr>
-                    
-                    <th>Date</th>									
+                    		
+                    <th>Drug Name</th>									
+                    <th>Dosage  </th>
+                    <th>Frequency</th>	
+                    <th>Date</th>								
                     <th>Created by </th>
                     <th>Prescription File</th>
                 </tr>     
@@ -104,12 +107,15 @@
                 
                
                 {% if prescription %}
-                    
-                {% for prescription_status in prescription_status %}
+                
+                {% for prescription in prescription %}
                 <tr>
+                    <td>{{ prescription.name }}</td>
+                    <td>{{ prescription.quantity }}</td>
+                    <td>{{ prescription.days }}</td>
                     
-                <td>  {{prescription_status.date_created}}</td>
-                    <td> Dorctor :{{prescription_status.doctor.user.first_name}} {{prescription_status.doctor.user.last_name}}</td>
+                <td>  {{prescription.uploaded_date}}</td>
+                    <td> Dorctor :{{prescription.doctor.user.first_name}} {{prescription.doctor.user.last_name}}</td>
                     
                     <td><a href="{% url 'getPrescription' %}" class="btn btn-sm bg-info-light"><i class="far fa-eye"></i> View</a></td>
                     <td>
