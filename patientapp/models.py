@@ -359,3 +359,54 @@ class Appointment(models.Model):
 
     def __str__(self):
         return self.patient.user.first_name
+    
+    
+    
+ # Make sure to import Patient if it's defined in another module
+
+# class LabData(models.Model):
+#     LAB_DATA_CHOICES = [
+#         ('labtest', 'Lab Test'),
+#         ('labreport', 'Lab Report'),
+#         ('testresult', 'Test Result'),
+#     ]
+
+#     data_type = models.CharField(max_length=10, choices=LAB_DATA_CHOICES)
+#     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+#     date_of_collection = models.DateTimeField()
+#     ordering_physician = models.CharField(max_length=100)
+#     specimen_type = models.CharField(max_length=100, blank=True, null=True)
+#     comments = models.TextField(blank=True, null=True)
+#     name = models.CharField(max_length=100, blank=True, null=True)
+#     description = models.TextField(blank=True, null=True)
+#     normal_range = models.CharField(max_length=50, blank=True, null=True)
+#     test_code = models.CharField(max_length=20, unique=True, blank=True, null=True)
+#     methodology = models.TextField(blank=True, null=True)
+#     result_value = models.FloatField(blank=True, null=True)
+#     units = models.CharField(max_length=20, blank=True, null=True)
+#     is_abnormal = models.BooleanField(default=False)
+#     reference_range = models.CharField(max_length=50, blank=True, null=True)
+
+#     def __str__(self):
+#         return f"Lab Data - Type: {self.get_data_type_display()}, Patient: {self.patient}, Date: {self.date_of_collection}"
+from django.db import models
+from .models import Patient, Doctor
+
+class LabReport(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    test_name = models.CharField(max_length=100)
+    test_result = models.DecimalField(max_digits=10, decimal_places=2)
+    test_unit = models.CharField(max_length=20)
+    normal_range_min = models.DecimalField(max_digits=10, decimal_places=2)
+    normal_range_max = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20)
+    specimen_type = models.CharField(max_length=50)
+    collection_date_time = models.DateTimeField()
+    lab_name = models.CharField(max_length=100)
+    report_number = models.CharField(max_length=20)
+    report_generated_date_time = models.DateTimeField()
+    signature = models.CharField(max_length=100)
+    credentials = models.CharField(max_length=100)
+    additional_notes = models.TextField()
+    barcode = models.CharField(max_length=50)

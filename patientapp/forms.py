@@ -188,3 +188,11 @@ class FamilyMedicalHistoryForm(forms.ModelForm):
         super(FamilyMedicalHistoryForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
+from django import forms
+from .models import LabReport
+
+class LabReportForm(forms.ModelForm):
+    class Meta:
+        model = LabReport
+        exclude = ['patient', 'doctor']  # Exclude patient and doctor fields from the form
+

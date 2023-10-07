@@ -27,8 +27,13 @@ urlpatterns = [
     
     path('treatmentpdf/<int:patient_id>/', views.generate_medical_treatment_pdf, name="generatedpdf"),
   
-    # ... your other URL patterns ...
-    # path('patient_treatment_history/<int:patient_id>/', views.patient_treatment_history, name='patient_treatment_history'),
+
+    # path('add_lab_data/', views.add_lab_data, name='add_lab_data'),
+    
+
+    # path('create-lab-report/', views.create_lab_report, name='create_lab_report'),
+    # path('lab-report-confirmation/', views.lab_report_confirmation, name='lab_report_confirmation'),
+    path('lab-report/<int:patient_id>/', views.lab_report, name='lab_report'),
 
 
     

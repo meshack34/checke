@@ -1097,3 +1097,48 @@ def generate_medical_treatment_pdf(request, patient_id):
 
     except Patient.DoesNotExist:
         return HttpResponseBadRequest("Patient not found")
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import LabReport, Patient, Doctor, MedicalHistoryy
+from .forms import LabReportForm
+
+def lab_report(request, patient_id):
+    try:
+        current_user = request.user
+        print(f'Current User: {current_user}')  # Add this line for debugging
+        patient = get_object_or_404(Patient, id=patient_id)
+        print(f'Patient: {patient}')  # Add this line for debugging
+        current_doctor = get_object_or_404(Doctor, user=current_user)
+        print(f'Current Doctor: {current_doctor}')  # Add this line for debugging
+
+        # Check if the current doctor has the medical history of the patient
+        doctor_for_patient = MedicalHistoryy.objects.get(patient=patient, doctor=current_doctor)
+
+        if request.method == 'POST':
+            form = LabReportForm(request.POST)
+            if form.is_valid():
+                lab_report = form.save(commit=False)
+                lab_report.patient = patient
+                lab_report.doctor = current_doctor
+                lab_report.save()
+                return redirect('lab_report_confirmation')
+        else:
+            form = LabReportForm()
+
+        context = {
+            'form': form,
+            'current_patient': patient,
+            'doctor_for_patient': doctor_for_patient,
+            'current_doctor': current_doctor,
+        }
+
+        return render(request, 'labreport/create_lab_report.html', context)
+
+    except Patient.DoesNotExist:
+        return HttpResponseBadRequest("Patient not found")
+    except Doctor.DoesNotExist:
+        return HttpResponseBadRequest("Doctor not found")
+
