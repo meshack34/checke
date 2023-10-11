@@ -1099,11 +1099,24 @@ def generate_medical_treatment_pdf(request, patient_id):
         return HttpResponseBadRequest("Patient not found")
 
 
+from django.shortcuts import render, get_object_or_404
+from .models import LabReport
+
+def lab_report_confirmation(request, lab_report_id):
+    lab_report = get_object_or_404(LabReport, id=lab_report_id)
+
+    context = {
+        'lab_report': lab_report,
+    }
+
+    return render(request, 'labreport/lab_report_confirmation.html', context)
 
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import LabReport, Patient, Doctor, MedicalHistoryy
 from .forms import LabReportForm
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 def lab_report(request, patient_id):
     try:
@@ -1124,7 +1137,9 @@ def lab_report(request, patient_id):
                 lab_report.patient = patient
                 lab_report.doctor = current_doctor
                 lab_report.save()
-                return redirect('lab_report_confirmation')
+            
+                confirmation_url = reverse('lab_report_confirmation', args=[lab_report.id])
+                return HttpResponseRedirect(confirmation_url)
         else:
             form = LabReportForm()
 

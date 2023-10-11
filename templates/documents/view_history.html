@@ -3,6 +3,9 @@
 {% block content %}
   <style>
     /* Style for the medical history table */
+    h2{
+      margin: 40px;
+    }
     .medical-history-table {
       width: 100%;
       border-collapse: collapse;
@@ -11,7 +14,7 @@
 
     .medical-history-table th, .medical-history-table td {
       border: 1px solid #ccc;
-      padding: 8px;
+      padding: 10px; /* Increased padding for better spacing */
       text-align: left;
     }
 
@@ -21,7 +24,7 @@
 
     .back-button {
       display: inline-block;
-      margin-top: 20px;
+      margin: 20px auto; /* Centered with top margin */
       text-decoration: none;
       padding: 10px 20px;
       background-color: #007BFF;
@@ -33,13 +36,17 @@
     .back-button:hover {
       background-color: #0056b3;
     }
+    .card{
+      padding: 100px;
+      margin: 10px;
+    }
   </style>
-
+<div class="card">
   <div class="medical-history-page">
     <h1 class="page-title">Medical History for {{ patient.user.first_name }} {{ patient.user.last_name }}</h1>
 
     <!-- Medical History Table -->
-    <h2>Medical History</h2>
+    <h2>Patient Details</h2>
     <table class="medical-history-table">
       <thead>
         <tr>
@@ -198,4 +205,5 @@
 
     <br><br>
   </div>
+</div>
 {% endblock %}

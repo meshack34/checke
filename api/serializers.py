@@ -13,8 +13,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-
-        # Include user_type in the token payload
         token['user_type'] = user.user_type  # Replace 'user_type' with your actual user type field
 
         return token

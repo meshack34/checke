@@ -1,16 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Lab Report</title>
-</head>
-<body>
-    <h1>Create Lab Report</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit Lab Report</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+  <style>
+    .lab-report-form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .form-column {
+      flex-basis: calc(50% - 10px); /* 50% width with spacing */
+      padding: 10px;
+      margin: 5px;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Center align the title and button */
+    h2, .btn-primary {
+      text-align: center;
+    }
+  </style>
+
+  <h2>Create Lab Report</h2>
+  <form method="post" class="lab-report-form">
+    {% csrf_token %}
+
+
+    <div class="form-column">
+      <div class="form-group">
+        <label for="{{ form.test_name.id_for_label }}">Test Name:</label>
+        {{ form.test_name }}
+        {{ form.test_name.errors }}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.test_result.id_for_label }}">Test Result:</label>
+        {{ form.test_result }}
+        {{ form.test_result.errors }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.test_unit.id_for_label }}">Test Unit:</label>
+        {{ form.test_unit }}
+        {{ form.test_unit.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.normal_range_min.id_for_label }}">Normal Range (Min):</label>
+        {{ form.normal_range_min }}
+        {{ form.normal_range_min.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.normal_range_max.id_for_label }}">Normal Range (Max):</label>
+        {{ form.normal_range_max }}
+        {{ form.normal_range_max.errors }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.status.id_for_label }}">Status:</label>
+        {{ form.status }}
+        {{ form.status.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.specimen_type.id_for_label }}">Specimen Type:</label>
+        {{ form.specimen_type }}
+        {{ form.specimen_type.errors }}
+      </div>
+      
+
+      <div class="form-group">
+        <label for="{{ form.collection_date_time.id_for_label }}">Collection Date and Time:</label>
+        {{ form.collection_date_time }}
+        {{ form.collection_date_time.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.lab_name.id_for_label }}">Lab Name:</label>
+        {{ form.lab_name }}
+        {{ form.lab_name.errors }}
+      </div>
+      <!-- Add more fields for the first column as needed -->
+    </div>
+
+    <div class="form-column">
+
+  
+      <div class="form-group">
+        <label for="{{ form.report_number.id_for_label }}">Report Number:</label>
+        {{ form.report_number }}
+        {{ form.report_number.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.report_generated_date_time.id_for_label }}">Report Generated Date and Time:</label>
+        {{ form.report_generated_date_time }}
+        {{ form.report_generated_date_time.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.signature.id_for_label }}">Signature:</label>
+        {{ form.signature }}
+        {{ form.signature.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.credentials.id_for_label }}">Credentials:</label>
+        {{ form.credentials }}
+        {{ form.credentials.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.additional_notes.id_for_label }}">Additional Notes:</label>
+        {{ form.additional_notes }}
+        {{ form.additional_notes.errors }}
+      </div>
+  
+      <div class="form-group">
+        <label for="{{ form.barcode.id_for_label }}">Barcode:</label>
+        {{ form.barcode }}
+        {{ form.barcode.errors }}
+      </div>
+   
+    </div>
+<div style="text-align: center;">
+  <button type="submit" class="btn btn-primary">Submit</button>
+</div> 
+</form>
+{% endblock %}
